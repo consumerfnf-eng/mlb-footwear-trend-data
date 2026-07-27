@@ -1,0 +1,1755 @@
+{
+  "brand": "MLB",
+  "product_domain": "FOOTWEAR",
+  "taxonomy_version": "2.2",
+  "updated_at": "2026-07-24",
+  "primary_line_enum": [
+    "LINER",
+    "RUNNER",
+    "SNEAKERS",
+    "CHUNKY",
+    "OUTDOOR",
+    "SUMMER ITEM",
+    "WINTER ITEM",
+    "NEW LINE"
+  ],
+  "primary_axis_note": "상품이 무엇인가를 나타내는 1차 분류. 라이프스타일 DNA와 분리한다.",
+  "lifestyle_axis_note": "PREMIUM SPORTIVE, STREET, FEMININE, WELLNESS는 상품이 어떻게 보여야 하는가를 나타내는 별도 축이다.",
+  "hard_overrides": {
+    "liner_platform": "LINER 원형과 직선·연속 솔 측벽이 유지되면 굽이 높아도 LINER",
+    "liner_skate_archetype": "스케이트 원형은 어퍼가 넓거나 패딩감이 있고 솔이 높아도 솔 측벽이 평평하고 연속적이면 LINER",
+    "chunky_sculptural_gate": "CHUNKY는 sole_height_level>=4 AND sole_sculpture_level>=3 AND sole_dominance=true를 모두 충족해야 함",
+    "runner_chunky_boundary": "러너 원형이라도 높은 솔의 강한 파동·요철·분절이 외곽선을 지배하면 CHUNKY. 솔 높이가 기준 미만이면 요철이 있어도 RUNNER 유지",
+    "outdoor_sandal": "아웃도어 샌들은 SUMMER ITEM, outdoor_attribute=true",
+    "sneaker_mule": "스니커즈 뮬은 SUMMER ITEM",
+    "padded_fur_slipper": "패딩/퍼 슬리퍼는 WINTER ITEM",
+    "mary_jane": "스니커즈형 메리제인은 SNEAKERS, 일반 메리제인 구두는 NEW LINE",
+    "new_line_gate": "일반 메리제인 구두는 NEW LINE. 그 외에는 비시즌 구조 혁신 증거가 있을 때만 NEW LINE"
+  },
+  "priority_rules": [
+    {
+      "order": 1,
+      "name": "원본값 보존",
+      "rule": "무신사 대분류와 상품유형은 수정하지 않고 source_category/source_product_type에 저장",
+      "note": "분류 이력과 재학습 근거를 보존"
+    },
+    {
+      "order": 2,
+      "name": "WINTER ITEM 우선",
+      "rule": "퍼·쉐어링·패딩·퀼팅·보온이 핵심이면 WINTER ITEM",
+      "note": "패딩/퍼 슬리퍼도 WINTER"
+    },
+    {
+      "order": 3,
+      "name": "SUMMER ITEM 우선",
+      "rule": "샌들·슬리퍼·뮬·클로그·오픈 포맷이면 SUMMER ITEM",
+      "note": "단, 2번 겨울 보온 신호가 있으면 WINTER"
+    },
+    {
+      "order": 4,
+      "name": "OUTDOOR 판정",
+      "rule": "폐쇄형 신발에서 러그·방수·립스탑·퀵레이스·토 보호·웨빙 중 2개 이상",
+      "note": "아웃도어 샌들은 3번 SUMMER"
+    },
+    {
+      "order": 5,
+      "name": "NEW LINE 판정",
+      "rule": "일반 메리제인 구두 또는 비시즌에 서로 다른 신발 원형이 구조적으로 결합된 유형",
+      "note": "메리제인 구두와 Snoafer가 대표. 기타·신상품·새 컬러라는 이유만으로 금지"
+    },
+    {
+      "order": 6,
+      "name": "CHUNKY 조형 솔 게이트",
+      "rule": "sole_height_level 4 이상, sole_sculpture_level 3 이상, sole_dominance=true를 모두 충족",
+      "note": "LV Tatic 기준. 러너 원형도 게이트 통과 시 CHUNKY"
+    },
+    {
+      "order": 7,
+      "name": "RUNNER 판정",
+      "rule": "메시·폼·힐 지지·토 스프링·드롭·분절 솔 중 3개 이상",
+      "note": "단, 6번 CHUNKY 조형 솔 게이트 통과 제품은 제외"
+    },
+    {
+      "order": 8,
+      "name": "SNEAKERS 판정",
+      "rule": "테라스·레이싱·무술·발레 원형 + 낮은 토·얇은 솔·발 밀착",
+      "note": "일반 캔버스·코트는 LINER"
+    },
+    {
+      "order": 9,
+      "name": "LINER 판정",
+      "rule": "기본·코트·덩크·스케이트·캔버스 원형과 컵솔·벌커나이즈드 구조",
+      "note": "굽이 높거나 어퍼가 넓어도 직선·연속 솔과 원형이 유지되면 LINER"
+    },
+    {
+      "order": 10,
+      "name": "검수 처리",
+      "rule": "최고 점수 80 미만, 1·2위 차이 12 미만, 필수 구조 증거 부족 시 REVIEW_REQUIRED",
+      "note": "사용자 확정값이 AI보다 우선"
+    }
+  ],
+  "shape_decision_metrics": {
+    "sole_height_level": {
+      "type": "integer",
+      "range": "1-5",
+      "labels": {
+        "1": "매우 얇은 저상 솔",
+        "2": "일반적인 스니커즈 솔",
+        "3": "눈에 띄게 높지만 태틱 기준 미만",
+        "4": "LV Tatic 수준의 높은 솔",
+        "5": "극단적으로 높은 솔"
+      }
+    },
+    "sole_sculpture_level": {
+      "type": "integer",
+      "range": "1-5",
+      "labels": {
+        "1": "평평하고 연속적인 측벽",
+        "2": "약한 굴곡 또는 단순 레이어",
+        "3": "뚜렷한 요철·파동·러그",
+        "4": "강한 파동·돌출·분절·다층 조형",
+        "5": "극단적인 포드·공동·비정형 조각"
+      }
+    },
+    "sole_dominance": {
+      "type": "boolean",
+      "definition": "솔의 높이·굴곡·폭이 어퍼 원형보다 신발 전체 외곽선과 시각적 무게를 더 강하게 결정하면 true"
+    },
+    "chunky_gate": "sole_height_level >= 4 AND sole_sculpture_level >= 3 AND sole_dominance = true",
+    "liner_precedence": "기본·코트·덩크·스케이트·캔버스 원형이며 솔 측벽이 평평하고 연속적이면 굽 높이와 어퍼 패딩감에 관계없이 LINER",
+    "runner_boundary": "러닝 구조 신호가 3개 이상이어도 chunky_gate를 통과하면 CHUNKY. 높이가 3 이하이면 요철이 있어도 RUNNER 가능"
+  },
+  "line_definitions": [
+    {
+      "line": "LINER",
+      "short_definition": "기본형·코트·덩크·스케이트·캔버스 계열",
+      "detailed_definition": "폐쇄형 클래식 어퍼와 컵솔·벌커나이즈드 솔처럼 원형이 선명한 스니커즈. 기본·코트·덩크·스케이트·캔버스 원형을 솔 높이나 어퍼 패딩감보다 우선한다.",
+      "subcategory_summary": "BASIC/MINIMAL, COURT/TENNIS, DUNK/BASKET, SKATE, CANVAS/VULCANIZED, CLASSIC SLIP-ON, PLATFORM LINER",
+      "required_signals": "클래식 패널, 비교적 곧고 연속적인 솔 측벽, 평평하거나 단순한 고무 아웃솔, 전통적인 레이스업·슬립온 구조",
+      "include": "캔버스 단화, 코트화, 덩크형, 스케이트화, 클래식 슬립온. 어퍼가 넓고 패딩감이 있거나 솔이 높아도 스케이트·코트 골격과 연속 측벽을 유지하면 포함",
+      "exclude": "러닝 폼·로커·힐 구조가 핵심이면 RUNNER. 매우 낮고 발에 밀착되며 테라스·레이싱·발레 원형이면 SNEAKERS. 높은 솔의 강한 요철·파동·분절이 외곽선을 지배하면 CHUNKY",
+      "hard_rule": "고정 규칙: LINER 어퍼 원형과 평평한 연속 솔 구조가 유지되면 굽이 높고 어퍼가 벌키해도 LINER. LV Tilted를 기준 사례로 사용한다."
+    },
+    {
+      "line": "RUNNER",
+      "short_definition": "러닝화 및 러닝 구조를 적용한 라이프스타일 슈즈",
+      "detailed_definition": "러닝 퍼포먼스에서 출발한 구조가 제품 인상을 결정하는 신발. 실제 러닝화와 러닝 솔·어퍼를 일상화한 패션 러너를 함께 포함한다.",
+      "subcategory_summary": "RETRO RUNNER, Y2K TECH RUNNER, MODERN PERFORMANCE, MAX CUSHION, TECH LIFESTYLE RUNNER, FASHION RUNNER",
+      "required_signals": "메시, 폼 미드솔, 힐 카운터, 토 스프링·로커, 힐-토 드롭, 분절 아웃솔 중 3개 이상",
+      "include": "레트로 러너, Y2K 테크 러너, 퍼포먼스 러너, 맥스 쿠션, 러너 기반 라이프스타일화",
+      "exclude": "트레일·하이킹·방수·러그 등 아웃도어 신호가 강하면 OUTDOOR. sole_height_level 4 이상이며 강한 요철·파동·분절 솔이 외곽선을 지배하면 CHUNKY",
+      "hard_rule": "기능 구조 우선이 기본이지만 chunky_gate 통과 여부를 먼저 확인한다. 솔 높이가 3 이하이면 요철이 있어도 러닝 메커니즘이 설명될 때 RUNNER로 유지한다."
+    },
+    {
+      "line": "SNEAKERS",
+      "short_definition": "낮고 슬림하며 발에 밀착되는 로우 프로파일 계열",
+      "detailed_definition": "MLB 내부에서 SNEAKERS는 전체 운동화의 총칭이 아니라 테라스·레이싱·무술·발레형처럼 낮고 길며 발에 붙는 저상 실루엣 전용 라인이다.",
+      "subcategory_summary": "TERRACE, RACING/DRIVING, SLIM RETRO TRAINER, MARTIAL ARTS, BALLET, SNEAKER MARY JANE",
+      "required_signals": "낮은 토, 얇은 솔, 낮은 발등, 길고 슬림한 라스트, 발 밀착, 검솔·드라이빙 힐·T-toe·밴드/리본 등 원형 신호",
+      "include": "테라스 축구화, 레이싱·드라이빙화, 태권도·복싱·무술형, 발레 스니커즈, 슬림 레트로 트레이너, 스니커즈형 메리제인",
+      "exclude": "일반 캔버스·코트·스케이트 기본형은 LINER. 일반 구두 구조의 메리제인은 NEW LINE",
+      "hard_rule": "고정 규칙: 메리제인 어퍼에 스니커즈 솔·어퍼 구조가 결합되면 SNEAKERS. 굽 높이만으로 CHUNKY로 보내지 않는다."
+    },
+    {
+      "line": "CHUNKY",
+      "short_definition": "높고 울퉁불퉁한 조형 솔이 디자인을 지배하는 패션 스니커즈",
+      "detailed_definition": "LV Tatic 수준 이상의 솔 높이와 뚜렷한 요철·파동·돌출·분절이 결합되어 솔이 신발 전체 외곽선과 시각적 무게를 지배하는 유형. 원형이 러너여도 조형 솔이 우선하면 CHUNKY로 분류한다.",
+      "subcategory_summary": "DAD SHOE, SCULPTURAL CHUNKY, SCULPTURAL RUNNER, BULKY SKATE, PUFFY VOLUME, VOLUME PLATFORM",
+      "required_signals": "sole_height_level 4 이상, sole_sculpture_level 3 이상, sole_dominance=true. 보조 신호로 다층·분절 솔, 돌출 조형, 넓은 풋프린트, 과장 폭을 사용",
+      "include": "높고 울퉁불퉁한 조형 러너, 대디슈즈, 조형적 청키, 퍼피 어퍼, 솔과 어퍼가 함께 커진 볼륨 플랫폼",
+      "exclude": "클래식 LINER 어퍼에 곧고 균일한 높은 솔만 적용한 경우는 LINER. 요철이 있어도 솔 높이가 태틱 기준 미만이고 러닝 구조가 지배하면 RUNNER",
+      "hard_rule": "고정 규칙: 굽 높이 또는 어퍼 부피 하나만으로 CHUNKY 판정 금지. 높이·조형·솔 지배성의 3개 게이트를 모두 확인하며 LV Tatic을 기준 사례로 사용한다."
+    },
+    {
+      "line": "OUTDOOR",
+      "short_definition": "아웃도어 디테일 또는 아웃도어 소재가 핵심인 유형",
+      "detailed_definition": "도시 착화용이라도 하이킹·트레킹·트레일·전술·기후 대응 구조나 소재가 제품 정체성을 만드는 신발을 포함한다.",
+      "subcategory_summary": "HIKING, TREKKING/APPROACH, TRAIL RUNNER, GORPCORE, TACTICAL/UTILITY, WEATHER/RAIN",
+      "required_signals": "러그 솔, 방수막, 립스탑, 퀵레이스, 보호 토캡, 웨빙, 게이터, 접지·배수 구조 중 2개 이상",
+      "include": "등산화, 트레킹화, 트레일 러너, 고프코어, 전술·유틸리티, 레인·웨더 대응 신발",
+      "exclude": "아웃도어 샌들은 SUMMER ITEM이 1차 라벨이며 outdoor=true를 보조 태그로 저장. 퍼·패딩·보온이 지배하면 WINTER ITEM",
+      "hard_rule": "고정 규칙: 아웃도어 소재·디테일이 실제 구조에 반영된 폐쇄형 제품은 OUTDOOR. 단순 카키색·산 배경만으로 판정하지 않는다."
+    },
+    {
+      "line": "SUMMER ITEM",
+      "short_definition": "샌들·슬리퍼·뮬 등 개방형 여름 아이템",
+      "detailed_definition": "앞코·뒤꿈치가 열리거나 스트랩·슬라이드·뮬·클로그처럼 개방 착화가 핵심인 제품을 최우선으로 묶는 시즌·포맷 라인이다.",
+      "subcategory_summary": "FLIP-FLOP, SLIDE, SPORT/CASUAL SANDAL, OUTDOOR SANDAL, STRAP, SLINGBACK SANDAL, MULE, CLOG, WATER/AQUA, INDOOR SLIPPER",
+      "required_signals": "오픈 토, 오픈 힐, 백리스, 스트랩, 슬라이드, 샌들 케이지, 배수·수상 구조 중 1개 이상",
+      "include": "샌들·슬리퍼·스니커즈 뮬·블로퍼·클로그·워터슈즈·아쿠아슈즈 전부. 아웃도어 샌들도 포함",
+      "exclude": "퍼·패딩·쉐어링·보온이 핵심인 겨울 슬리퍼·뮬은 WINTER ITEM으로 재분류",
+      "hard_rule": "고정 규칙: 아웃도어 샌들=SUMMER ITEM. 스니커즈 뮬=SUMMER ITEM. NEW LINE으로 보내지 않는다."
+    },
+    {
+      "line": "WINTER ITEM",
+      "short_definition": "어그·털·패딩·보온 부츠와 겨울 시즌 신발",
+      "detailed_definition": "퍼·쉐어링·패딩·퀼팅·보온재 또는 부츠형 겨울 상품성이 제품을 지배하는 시즌 라인이다.",
+      "subcategory_summary": "SHEARLING/UGG, PUFFER BOOT, FUR BOOT, WINTER SNEAKER BOOT, PADDED/FUR SLIPPER, FASHION BOOT",
+      "required_signals": "퍼 라이닝, 쉐어링, 패딩, 퀼팅, 보온재, 스노우 구조, 겨울 부츠 길이·볼륨 중 1개 이상",
+      "include": "어그형, 털·패딩 부츠, 보온 스니커 부츠, 패딩·퍼 슬리퍼, 겨울용 앵클·미들·롱 부츠",
+      "exclude": "레인 부츠·전술 워커처럼 보온보다 방수·접지·보호가 핵심이면 OUTDOOR. 비시즌 신규 하이브리드는 NEW LINE",
+      "hard_rule": "시즌 우선: 퍼·패딩 슬리퍼는 형태가 슬리퍼여도 WINTER ITEM이 1차 라벨이다."
+    },
+    {
+      "line": "NEW LINE",
+      "short_definition": "일반 메리제인 구두 및 시즌물이 아닌 새로운 구조적 신발 유형",
+      "detailed_definition": "일반 구두 구조의 메리제인과, 기존 두 가지 이상 원형이 결합되어 7개 기존 라인으로 설명하기 어려운 비시즌 신유형. Snoafer가 대표 사례다.",
+      "subcategory_summary": "SNOAFER, MARY JANE DRESS, DRESS SNEAKER, MODULAR/CONVERTIBLE, NON-SEASON HYBRID, EMERGING ARCHETYPE",
+      "required_signals": "maryjane_dress=true 또는 서로 다른 원형의 어퍼·솔·착화 방식이 명확한 비시즌 구조 결합",
+      "include": "로퍼 어퍼+러닝/스니커 솔의 Snoafer, 일반 구두 구조의 메리제인, 더비·구두와 스니커 구조 결합, 모듈형·변환형 신발",
+      "exclude": "새 컬러·소재·그래픽·콜라보만 새로운 제품은 제외. 샌들·슬리퍼·뮬·클로그는 SUMMER, 퍼·패딩 부츠는 WINTER",
+      "hard_rule": "고정 규칙: 일반 메리제인 구두는 NEW LINE. 그 외에는 기타 항목이나 미분류를 버리는 통으로 사용하지 않는다."
+    }
+  ],
+  "subcategories": [
+    {
+      "line": "LINER",
+      "name_ko": "베이직·미니멀",
+      "code": "LINER_BASIC_MINIMAL",
+      "definition": "패널과 장식이 적은 일반 데일리 스니커즈",
+      "positive_signals": "폐쇄형 어퍼, 단순 레이스업, 곧은 컵솔 측벽",
+      "boundary_rule": "러닝 폼·로커 또는 저상 원형이 핵심이면 제외"
+    },
+    {
+      "line": "LINER",
+      "name_ko": "코트·테니스",
+      "code": "LINER_COURT_TENNIS",
+      "definition": "테니스·코트화에서 출발한 정돈된 기본형",
+      "positive_signals": "가죽 어퍼, 토·사이드 보강, 안정적 컵솔",
+      "boundary_rule": "기능성 메시·폼이 지배하면 RUNNER"
+    },
+    {
+      "line": "LINER",
+      "name_ko": "덩크·바스켓 헤리티지",
+      "code": "LINER_DUNK_BASKET",
+      "definition": "레트로 농구화의 다중 패널과 컵솔을 일상화한 유형",
+      "positive_signals": "펀칭 토, 다중 가죽 패널, 패딩 칼라",
+      "boundary_rule": "실제 퍼포먼스 폼 구조는 RUNNER"
+    },
+    {
+      "line": "LINER",
+      "name_ko": "스케이트",
+      "code": "LINER_SKATE",
+      "definition": "넓은 토와 패딩 텅·칼라, 평평하고 연속적인 솔을 가진 스케이트보드 원형",
+      "positive_signals": "평평한 아웃솔, 연속적인 솔 측벽, 넓은 토, 두꺼운 텅·칼라, 굵은 레이스",
+      "boundary_rule": "어퍼가 넓거나 솔이 높아도 스케이트 골격과 연속 측벽이면 LINER. 높은 솔의 강한 요철·파동·분절이 외곽선을 지배할 때만 CHUNKY"
+    },
+    {
+      "line": "LINER",
+      "name_ko": "캔버스·벌커나이즈드",
+      "code": "LINER_CANVAS_VULCANIZED",
+      "definition": "캔버스 어퍼와 고무 폭싱 테이프의 클래식형",
+      "positive_signals": "캔버스, 폭싱 테이프, 유연한 고무창",
+      "boundary_rule": "발레·무술·테라스 원형이 분명하면 SNEAKERS"
+    },
+    {
+      "line": "LINER",
+      "name_ko": "클래식 슬립온",
+      "code": "LINER_CLASSIC_SLIPON",
+      "definition": "오픈 힐이 없는 폐쇄형 기본 슬립온",
+      "positive_signals": "고어 밴드, 단순 어퍼, 평평한 컵솔",
+      "boundary_rule": "오픈 힐은 SUMMER ITEM"
+    },
+    {
+      "line": "LINER",
+      "name_ko": "플랫폼 라이너",
+      "code": "LINER_PLATFORM",
+      "definition": "LINER 원형을 유지하면서 솔 높이만 확장한 유형",
+      "positive_signals": "클래식 어퍼, 곧고 연속적인 높은 솔 측벽",
+      "boundary_rule": "다층·돌출·과장 폭이 전체를 지배하면 CHUNKY"
+    },
+    {
+      "line": "RUNNER",
+      "name_ko": "레트로 러너",
+      "code": "RUNNER_RETRO",
+      "definition": "1970~1990년대 러닝 원형을 일상화한 유형",
+      "positive_signals": "스웨이드+나일론 메시, 단순 EVA, 중간 볼륨",
+      "boundary_rule": "컵솔 기본형은 LINER"
+    },
+    {
+      "line": "RUNNER",
+      "name_ko": "Y2K 테크 러너",
+      "code": "RUNNER_Y2K_TECH",
+      "definition": "2000년대 러닝 기술미학의 복합 패널형",
+      "positive_signals": "오버레이, 메시, TPU, 메탈릭, 분절 솔",
+      "boundary_rule": "아웃도어 러그·방수 구조가 지배하면 OUTDOOR"
+    },
+    {
+      "line": "RUNNER",
+      "name_ko": "모던 퍼포먼스",
+      "code": "RUNNER_MODERN_PERFORMANCE",
+      "definition": "반응성·지지·경량 등 실제 러닝 기능이 중심",
+      "positive_signals": "엔지니어드 메시, 기능성 폼, 힐 지지, 로커",
+      "boundary_rule": "트레일용이면 OUTDOOR"
+    },
+    {
+      "line": "RUNNER",
+      "name_ko": "맥스 쿠션",
+      "code": "RUNNER_MAX_CUSHION",
+      "definition": "매우 높은 폼과 로커를 가진 러닝형",
+      "positive_signals": "높은 폼 스택, 토 스프링, 힐-토 드롭",
+      "boundary_rule": "폼이 높아도 솔 측벽이 기능적으로 연속적이면 RUNNER. 높은 솔의 강한 조형 요철이 외곽선을 지배하면 CHUNKY"
+    },
+    {
+      "line": "RUNNER",
+      "name_ko": "테크 라이프스타일 러너",
+      "code": "RUNNER_TECH_LIFESTYLE",
+      "definition": "테크니컬 패브릭·스웨이드 레이어와 기능성 러버 솔을 일상 패션으로 해석한 러너",
+      "positive_signals": "러너형 어퍼, 테크니컬 패브릭, 스웨이드 오버레이, 힐 지지, 유연·접지·내마모 솔",
+      "boundary_rule": "sole_height_level이 3 이하이면 요철 솔도 RUNNER 가능. 태틱 수준의 높은 조형 솔이 외곽선을 지배하면 CHUNKY"
+    },
+    {
+      "line": "RUNNER",
+      "name_ko": "패션 러너",
+      "code": "RUNNER_FASHION",
+      "definition": "러닝 원형을 패션 소재·컬러로 변형한 라이프스타일형",
+      "positive_signals": "러너 실루엣과 3개 이상 러닝 구조 신호",
+      "boundary_rule": "러닝 구조 설명이 불가능하면 LINER. chunky_gate를 통과하면 CHUNKY"
+    },
+    {
+      "line": "SNEAKERS",
+      "name_ko": "테라스",
+      "code": "SNEAKERS_TERRACE",
+      "definition": "실내 축구·테라스 문화 기반의 저상형",
+      "positive_signals": "T-toe, 검솔, 낮은 토, 길고 슬림한 라스트",
+      "boundary_rule": "일반 코트 컵솔은 LINER"
+    },
+    {
+      "line": "SNEAKERS",
+      "name_ko": "레이싱·드라이빙",
+      "code": "SNEAKERS_RACING_DRIVING",
+      "definition": "모터스포츠·드라이빙 원형의 길고 얇은 유형",
+      "positive_signals": "뒤꿈치까지 감싼 고무, 얇은 솔, 긴 토",
+      "boundary_rule": "실제 클릿·특수 경기화는 참고 데이터"
+    },
+    {
+      "line": "SNEAKERS",
+      "name_ko": "슬림 레트로 트레이너",
+      "code": "SNEAKERS_SLIM_RETRO",
+      "definition": "얇은 EVA·고무창과 간결한 패널의 저상 트레이너",
+      "positive_signals": "낮은 발등, 작은 솔 볼륨, 발 밀착",
+      "boundary_rule": "일반 볼륨 캔버스는 LINER"
+    },
+    {
+      "line": "SNEAKERS",
+      "name_ko": "무술·복싱형",
+      "code": "SNEAKERS_MARTIAL_ARTS",
+      "definition": "태권도·복싱·무술화에서 온 발 밀착 실루엣",
+      "positive_signals": "얇은 솔, 유연한 어퍼, 낮은 발등",
+      "boundary_rule": "실제 경기 전용 장비는 추천 범위를 별도 관리"
+    },
+    {
+      "line": "SNEAKERS",
+      "name_ko": "발레",
+      "code": "SNEAKERS_BALLET",
+      "definition": "발레 플랫의 낮은 비례·유연한 곡선·새틴·리본·밴드 감성을 스니커 구조로 해석",
+      "positive_signals": "둥근 낮은 토, 얇은 러버 솔, 발 밀착, 새틴·소프트 어퍼, 주름·셔링, 리본·밴드 또는 슬림 레이스업",
+      "boundary_rule": "순수 발레 플랫은 대상 외. 러버 솔·스니커 클로저·스포츠 트레드가 확인되면 SNEAKERS"
+    },
+    {
+      "line": "SNEAKERS",
+      "name_ko": "스니커즈형 메리제인",
+      "code": "SNEAKERS_MARYJANE",
+      "definition": "메리제인 어퍼와 스니커즈 솔·어퍼 구조가 결합된 유형",
+      "positive_signals": "스니커 솔, 스포츠 소재·패널, 발등 스트랩",
+      "boundary_rule": "일반 구두 구조의 메리제인은 NEW LINE"
+    },
+    {
+      "line": "CHUNKY",
+      "name_ko": "대디슈즈",
+      "code": "CHUNKY_DAD_SHOE",
+      "definition": "복합 패널과 넓은 솔의 무거운 레트로 패션형",
+      "positive_signals": "넓은 풋프린트, 다층 솔, 복합 패널",
+      "boundary_rule": "러닝 구조가 설명되고 chunky_gate를 통과하지 않으면 RUNNER"
+    },
+    {
+      "line": "CHUNKY",
+      "name_ko": "조형적 청키",
+      "code": "CHUNKY_SCULPTURAL",
+      "definition": "태틱 수준 이상으로 높고 곡선·돌출·굴곡이 강한 조형적 솔 중심형",
+      "positive_signals": "sole_height_level 4 이상, 비정형 곡선, 돌출 피스, 과장된 3D 볼륨, sole_dominance=true",
+      "boundary_rule": "곧고 균일한 플랫폼 LINER와 높이가 3 이하인 테크 러너는 제외"
+    },
+    {
+      "line": "CHUNKY",
+      "name_ko": "조형적 러너",
+      "code": "CHUNKY_SCULPTURAL_RUNNER",
+      "definition": "러너형 어퍼에 높고 강하게 울퉁불퉁한 조형 솔을 결합하여 솔이 전체 인상을 지배하는 유형",
+      "positive_signals": "러너 오버레이·메시 + sole_height_level 4 이상 + sole_sculpture_level 3 이상 + sole_dominance=true",
+      "boundary_rule": "러너 어퍼라도 높이가 3 이하이거나 솔 지배성이 없으면 RUNNER_TECH_LIFESTYLE"
+    },
+    {
+      "line": "CHUNKY",
+      "name_ko": "벌키 스케이트",
+      "code": "CHUNKY_BULKY_SKATE",
+      "definition": "스케이트 원형을 넘어 어퍼·솔 전체가 과장된 유형",
+      "positive_signals": "오버사이즈 패딩, 과장 폭, 무거운 밸런스",
+      "boundary_rule": "기본 스케이트, 높은 직선 플랫폼, 연속적인 컵솔·검솔은 LINER. chunky_gate 통과 제품만 CHUNKY"
+    },
+    {
+      "line": "CHUNKY",
+      "name_ko": "퍼피 볼륨",
+      "code": "CHUNKY_PUFFY_VOLUME",
+      "definition": "패딩·부풀린 패널이 전체 부피를 만드는 패션형",
+      "positive_signals": "퍼피 어퍼, 둥근 대형 토, 두꺼운 솔",
+      "boundary_rule": "보온·퍼·패딩 시즌성이 핵심이면 WINTER ITEM"
+    },
+    {
+      "line": "CHUNKY",
+      "name_ko": "볼륨 플랫폼",
+      "code": "CHUNKY_VOLUME_PLATFORM",
+      "definition": "솔뿐 아니라 어퍼와 폭까지 함께 과장된 플랫폼형",
+      "positive_signals": "넓은 솔, 다층 측벽, 과장된 전체 덩어리",
+      "boundary_rule": "LINER 원형에 단일 직선 솔만 높으면 LINER"
+    },
+    {
+      "line": "OUTDOOR",
+      "name_ko": "하이킹",
+      "code": "OUTDOOR_HIKING",
+      "definition": "산악 보행 보호·접지 중심형",
+      "positive_signals": "러그, 보호 토캡, 발목 지지, 방수",
+      "boundary_rule": "샌들 구조면 SUMMER ITEM"
+    },
+    {
+      "line": "OUTDOOR",
+      "name_ko": "트레킹·어프로치",
+      "code": "OUTDOOR_TREKKING_APPROACH",
+      "definition": "장거리 보행과 암반 접근 구조",
+      "positive_signals": "클라이밍 토, 웨빙, 러그, 내마모 어퍼",
+      "boundary_rule": "단순 러닝화는 RUNNER"
+    },
+    {
+      "line": "OUTDOOR",
+      "name_ko": "트레일 러너",
+      "code": "OUTDOOR_TRAIL_RUNNER",
+      "definition": "러닝 베이스에 오프로드 접지·보호를 결합",
+      "positive_signals": "트레일 러그, 토 보호, 게이터, 방수막",
+      "boundary_rule": "1차 OUTDOOR, base_archetype=RUNNER"
+    },
+    {
+      "line": "OUTDOOR",
+      "name_ko": "고프코어 라이프스타일",
+      "code": "OUTDOOR_GORPCORE",
+      "definition": "아웃도어 부자재와 소재를 도시형으로 해석",
+      "positive_signals": "퀵레이스, 립스탑, 웨빙, 러그",
+      "boundary_rule": "컬러·연출만 아웃도어이면 제외"
+    },
+    {
+      "line": "OUTDOOR",
+      "name_ko": "전술·유틸리티",
+      "code": "OUTDOOR_TACTICAL_UTILITY",
+      "definition": "보호·내구·고정 장치를 강조한 실용형",
+      "positive_signals": "버클, 웨빙, 보호 패널, 내마모 러버",
+      "boundary_rule": "보온 패딩이 지배하면 WINTER ITEM"
+    },
+    {
+      "line": "OUTDOOR",
+      "name_ko": "웨더·레인",
+      "code": "OUTDOOR_WEATHER_RAIN",
+      "definition": "비·진흙·습기에 대응하는 방수형",
+      "positive_signals": "러버 셸, 심실링, 방수막, 깊은 러그",
+      "boundary_rule": "퍼·보온 스노우부츠는 WINTER ITEM"
+    },
+    {
+      "line": "SUMMER ITEM",
+      "name_ko": "쪼리·플립플랍",
+      "code": "SUMMER_FLIP_FLOP",
+      "definition": "토 포스트 중심의 완전 개방형",
+      "positive_signals": "Y 스트랩, 오픈 토·힐",
+      "boundary_rule": "퍼·보온 소재가 지배하면 WINTER ITEM"
+    },
+    {
+      "line": "SUMMER ITEM",
+      "name_ko": "슬라이드",
+      "code": "SUMMER_SLIDE",
+      "definition": "앞 밴드와 오픈 힐의 간편 착화형",
+      "positive_signals": "원 밴드, 오픈 토·힐",
+      "boundary_rule": "패딩·퍼 겨울 슬라이드는 WINTER ITEM"
+    },
+    {
+      "line": "SUMMER ITEM",
+      "name_ko": "스포츠·캐주얼 샌들",
+      "code": "SUMMER_SPORT_CASUAL_SANDAL",
+      "definition": "스트랩과 쿠셔닝 솔의 일상형",
+      "positive_signals": "스트랩, 개방 구조, 쿠셔닝",
+      "boundary_rule": "폐쇄형이면 구조에 따라 재판정"
+    },
+    {
+      "line": "SUMMER ITEM",
+      "name_ko": "아웃도어 샌들",
+      "code": "SUMMER_OUTDOOR_SANDAL",
+      "definition": "러그·웨빙 등 아웃도어 기능을 가진 샌들",
+      "positive_signals": "개방형+러그·퀵버클·웨빙",
+      "boundary_rule": "1차 SUMMER, outdoor=true"
+    },
+    {
+      "line": "SUMMER ITEM",
+      "name_ko": "스트랩·슬링백 샌들",
+      "code": "SUMMER_STRAP_SLINGBACK",
+      "definition": "복수 스트랩 또는 뒤꿈치 스트랩 샌들",
+      "positive_signals": "오픈 토, 스트랩, 슬링백",
+      "boundary_rule": "폐쇄형 저상 스니커는 SNEAKERS 후보"
+    },
+    {
+      "line": "SUMMER ITEM",
+      "name_ko": "뮬·블로퍼",
+      "code": "SUMMER_MULE_BLOAFER",
+      "definition": "뒤꿈치가 열린 백리스 착화형 전체",
+      "positive_signals": "오픈 힐, 스니커·로퍼·샌들 앞코",
+      "boundary_rule": "퍼·패딩·보온 뮬은 WINTER ITEM"
+    },
+    {
+      "line": "SUMMER ITEM",
+      "name_ko": "클로그",
+      "code": "SUMMER_CLOG",
+      "definition": "넓은 셸 토와 슬립온 구조의 클로그형",
+      "positive_signals": "셸형 토, 오픈 또는 가동 힐 스트랩",
+      "boundary_rule": "퍼·패딩 클로그는 WINTER ITEM"
+    },
+    {
+      "line": "SUMMER ITEM",
+      "name_ko": "워터·아쿠아",
+      "code": "SUMMER_WATER_AQUA",
+      "definition": "물놀이·배수·속건을 위한 여름 기능형",
+      "positive_signals": "배수홀, 네오프렌·메시, 고무 접지",
+      "boundary_rule": "보온 다이빙 부츠는 특수장비 참고"
+    },
+    {
+      "line": "SUMMER ITEM",
+      "name_ko": "실내 슬리퍼",
+      "code": "SUMMER_INDOOR_SLIPPER",
+      "definition": "실내 착화용 오픈형 슬리퍼",
+      "positive_signals": "오픈 힐, 간편 착화",
+      "boundary_rule": "퍼·패딩 겨울 실내화는 WINTER ITEM"
+    },
+    {
+      "line": "WINTER ITEM",
+      "name_ko": "쉐어링·어그",
+      "code": "WINTER_SHEARLING_UGG",
+      "definition": "쉐어링과 둥근 부츠 볼륨의 보온형",
+      "positive_signals": "스웨이드·쉐어링, 퍼 라이닝, 둥근 토",
+      "boundary_rule": "비보온 모카신은 별도 판정"
+    },
+    {
+      "line": "WINTER ITEM",
+      "name_ko": "패딩 부츠",
+      "code": "WINTER_PUFFER_BOOT",
+      "definition": "패딩·퀼팅이 어퍼를 지배하는 부츠",
+      "positive_signals": "퀼팅, 패딩 볼륨, 보온 라이닝",
+      "boundary_rule": "전술 웨빙·보호가 핵심이면 OUTDOOR"
+    },
+    {
+      "line": "WINTER ITEM",
+      "name_ko": "퍼 부츠",
+      "code": "WINTER_FUR_BOOT",
+      "definition": "털·퍼 노출과 보온성이 핵심인 부츠",
+      "positive_signals": "퍼 트림, 퍼 라이닝, 겨울 볼륨",
+      "boundary_rule": "장식 퍼만 있는 일반 스니커는 재판정"
+    },
+    {
+      "line": "WINTER ITEM",
+      "name_ko": "윈터 스니커 부츠",
+      "code": "WINTER_SNEAKER_BOOT",
+      "definition": "스니커 솔과 보온 부츠 어퍼 결합",
+      "positive_signals": "쿠셔닝 솔, 보온·방수 어퍼, 미드컷 이상",
+      "boundary_rule": "비시즌 구조 혁신만 핵심이면 NEW LINE"
+    },
+    {
+      "line": "WINTER ITEM",
+      "name_ko": "패딩·퍼 슬리퍼",
+      "code": "WINTER_PADDED_FUR_SLIPPER",
+      "definition": "오픈형이지만 패딩·퍼·보온이 지배하는 겨울 슬리퍼",
+      "positive_signals": "퍼 풋베드, 패딩 어퍼, 보온 안감",
+      "boundary_rule": "일반 슬리퍼는 SUMMER ITEM"
+    },
+    {
+      "line": "WINTER ITEM",
+      "name_ko": "패션 부츠",
+      "code": "WINTER_FASHION_BOOT",
+      "definition": "앵클·미들·니하이·롱 등 겨울 시즌 패션 부츠",
+      "positive_signals": "부츠 길이, 겨울 소재·시즌성",
+      "boundary_rule": "레인·전술·하이킹 기능이 지배하면 OUTDOOR"
+    },
+    {
+      "line": "NEW LINE",
+      "name_ko": "스노퍼",
+      "code": "NEW_SNOAFER",
+      "definition": "로퍼 어퍼와 러닝·스니커 솔의 기능을 구조적으로 결합한 비시즌 신유형",
+      "positive_signals": "페니 스트랩·에이프런 스티치·로퍼 밴드 + 경량 폼·러버 솔·로커·기하학 트레드·어퍼를 감싸는 솔",
+      "boundary_rule": "순수 로퍼 또는 구두에 얇은 고무창만 적용한 제품은 제외. Prada Speedrock처럼 공식적으로 포멀 디테일과 스니커 기능의 하이브리드가 확인되면 포함"
+    },
+    {
+      "line": "NEW LINE",
+      "name_ko": "일반 메리제인 구두",
+      "code": "NEW_MARYJANE_DRESS",
+      "definition": "일반 구두 라스트·구두 솔과 발등 스트랩으로 구성된 메리제인",
+      "positive_signals": "구두 라스트, 구두형 플랫·힐 솔, 발등 스트랩",
+      "boundary_rule": "스니커즈 솔·스포츠 어퍼가 결합되면 SNEAKERS"
+    },
+    {
+      "line": "NEW LINE",
+      "name_ko": "드레스 스니커",
+      "code": "NEW_DRESS_SNEAKER",
+      "definition": "더비·윙팁·몽크 등 구두 어퍼와 스니커 구조 결합",
+      "positive_signals": "드레스 어퍼+쿠셔닝 솔·러버 아웃솔",
+      "boundary_rule": "구두에 얇은 고무창만 적용한 것은 제외"
+    },
+    {
+      "line": "NEW LINE",
+      "name_ko": "모듈형·변환형",
+      "code": "NEW_MODULAR_CONVERTIBLE",
+      "definition": "부품 교체나 착화 방식 변환이 구조적 가치인 유형",
+      "positive_signals": "탈착, 접이, 교체형 모듈",
+      "boundary_rule": "색상 교체만 가능한 장식은 제외"
+    },
+    {
+      "line": "NEW LINE",
+      "name_ko": "비시즌 하이브리드",
+      "code": "NEW_NONSEASON_HYBRID",
+      "definition": "기존 원형 두 가지 이상을 결합하되 시즌 포맷이 아닌 유형",
+      "positive_signals": "서로 다른 어퍼·솔·클로저 원형의 구조 결합",
+      "boundary_rule": "뮬·샌들·클로그·겨울 부츠는 시즌 라인"
+    },
+    {
+      "line": "NEW LINE",
+      "name_ko": "신규 원형",
+      "code": "NEW_EMERGING_ARCHETYPE",
+      "definition": "기존 7개 라인으로 설명되지 않는 반복 가능한 신유형",
+      "positive_signals": "동일 구조가 3개 이상 제품·2개 이상 브랜드에서 관찰",
+      "boundary_rule": "단발성 장식·협업·컬러는 제외"
+    }
+  ],
+  "reference_cases": [
+    {
+      "case_id": "LV_OASIS_MULE_1ACRPV",
+      "brand": "LOUIS VUITTON",
+      "product_name": "LV Oasis Mule",
+      "product_code": "1ACRPV",
+      "primary_line": "SUMMER ITEM",
+      "subcategory_code": "SUMMER_MULE_BLOAFER",
+      "base_archetype": "MULE",
+      "sole_height_level": 2,
+      "sole_sculpture_level": 1,
+      "sole_dominance": false,
+      "primary_lifestyle": "WELLNESS",
+      "decisive_evidence": "백리스 뮬 포맷이므로 SUMMER ITEM 우선",
+      "user_confirmed": true
+    },
+    {
+      "case_id": "LV_TILTED_SNEAKER_1AKN68",
+      "brand": "LOUIS VUITTON",
+      "product_name": "LV Tilted Sneaker",
+      "product_code": "1AKN68",
+      "primary_line": "LINER",
+      "subcategory_code": "LINER_SKATE",
+      "base_archetype": "SKATE",
+      "sole_height_level": 3,
+      "sole_sculpture_level": 2,
+      "sole_dominance": false,
+      "primary_lifestyle": "STREET",
+      "decisive_evidence": "넓고 패딩감 있는 스케이트 어퍼와 높은 솔이지만 솔 측벽이 평평하고 연속적",
+      "user_confirmed": true
+    },
+    {
+      "case_id": "LV_DROP_300_1AKOYF",
+      "brand": "LOUIS VUITTON",
+      "product_name": "LV Drop 300 Sneaker",
+      "product_code": "1AKOYF",
+      "primary_line": "RUNNER",
+      "subcategory_code": "RUNNER_RETRO",
+      "base_archetype": "RETRO RUNNER",
+      "sole_height_level": 2,
+      "sole_sculpture_level": 2,
+      "sole_dominance": false,
+      "primary_lifestyle": "PREMIUM SPORTIVE",
+      "decisive_evidence": "300g 경량, 빈티지 러닝 실루엣, 충격 흡수 아웃솔과 프리미엄 테크 소재",
+      "user_confirmed": true
+    },
+    {
+      "case_id": "LV_TATIC_RUNNER_1AKC33",
+      "brand": "LOUIS VUITTON",
+      "product_name": "LV Tatic Runner Sneaker",
+      "product_code": "1AKC33",
+      "primary_line": "CHUNKY",
+      "subcategory_code": "CHUNKY_SCULPTURAL_RUNNER",
+      "base_archetype": "RUNNER",
+      "sole_height_level": 4,
+      "sole_sculpture_level": 4,
+      "sole_dominance": true,
+      "primary_lifestyle": "STREET",
+      "decisive_evidence": "높은 솔과 강한 파동·요철·분절이 외곽선과 시각적 무게를 지배",
+      "user_confirmed": true
+    },
+    {
+      "case_id": "MIUMIU_PLUME_SATIN_5E570E",
+      "brand": "MIU MIU",
+      "product_name": "Plume Satin Sneakers",
+      "product_code": "5E570E_049_F0236_F_005",
+      "primary_line": "SNEAKERS",
+      "subcategory_code": "SNEAKERS_BALLET",
+      "base_archetype": "BALLET LOW PROFILE",
+      "sole_height_level": 1,
+      "sole_sculpture_level": 1,
+      "sole_dominance": false,
+      "primary_lifestyle": "FEMININE",
+      "decisive_evidence": "얇은 러버 솔, 발 밀착 저상 비례, 새틴·셔링과 발레리나 감성",
+      "user_confirmed": true
+    },
+    {
+      "case_id": "MIUMIU_TYRE_5E417E",
+      "brand": "MIU MIU",
+      "product_name": "Tyre Technical Fabric and Suede Sneakers",
+      "product_code": "5E417E_LYW_F0R3K_F_005",
+      "primary_line": "RUNNER",
+      "subcategory_code": "RUNNER_TECH_LIFESTYLE",
+      "base_archetype": "TECH RUNNER",
+      "sole_height_level": 3,
+      "sole_sculpture_level": 3,
+      "sole_dominance": false,
+      "primary_lifestyle": "STREET",
+      "decisive_evidence": "요철 솔이 있으나 높이가 태틱 기준 미만이고 솔이 전체 외곽선을 지배하지 않음",
+      "user_confirmed": true
+    },
+    {
+      "case_id": "PRADA_SPEEDROCK_LOAFER_2DE161",
+      "brand": "PRADA",
+      "product_name": "Speedrock Leather Loafers",
+      "product_code": "2DE161_070_F0003_F_G000",
+      "primary_line": "NEW LINE",
+      "subcategory_code": "NEW_SNOAFER",
+      "base_archetype": "LOAFER + SNEAKER",
+      "sole_height_level": 3,
+      "sole_sculpture_level": 2,
+      "sole_dominance": false,
+      "primary_lifestyle": "PREMIUM SPORTIVE",
+      "decisive_evidence": "로퍼의 포멀 어퍼와 경량 스포츠 솔·기하학 트레드를 구조적으로 결합한 스노퍼",
+      "user_confirmed": true
+    }
+  ],
+  "musinsa_mapping": [
+    {
+      "source_category": "스니커즈",
+      "source_product_type": "캔버스/단화",
+      "default_mlb_line": "LINER",
+      "candidate_lines": [
+        "LINER",
+        "SNEAKERS"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "캔버스·벌커나이즈드·일반 단화는 LINER",
+      "override_rule": "테라스·발레·무술처럼 원형이 명확한 극저상형만 SNEAKERS",
+      "default_subcategory": "LINER_CANVAS_VULCANIZED",
+      "secondary_attribute": "base=LINER",
+      "exclusion_rule": "순수 발레 플랫 등 스니커 구조가 없으면 제외"
+    },
+    {
+      "source_category": "스니커즈",
+      "source_product_type": "패션스니커즈화",
+      "default_mlb_line": "LINER",
+      "candidate_lines": [
+        "LINER",
+        "RUNNER",
+        "SNEAKERS",
+        "CHUNKY",
+        "OUTDOOR",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "무신사 명칭으로 확정하지 않고 이미지 구조를 재판정",
+      "override_rule": "LINER 원형이 유지된 높은 굽은 LINER",
+      "default_subcategory": "LINE_BY_IMAGE",
+      "secondary_attribute": "source_broad=true",
+      "exclusion_rule": "신발 전체가 보이지 않거나 구조 증거가 부족하면 검수"
+    },
+    {
+      "source_category": "스니커즈",
+      "source_product_type": "스니커즈 뮬",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "오픈 힐·백리스이므로 SUMMER ITEM",
+      "override_rule": "스니커 어퍼가 있어도 NEW LINE으로 보내지 않음",
+      "default_subcategory": "SUMMER_MULE_BLOAFER",
+      "secondary_attribute": "base=LINER/RUNNER 가능",
+      "exclusion_rule": "퍼·패딩·보온형은 WINTER ITEM"
+    },
+    {
+      "source_category": "스니커즈",
+      "source_product_type": "라이프스타일화",
+      "default_mlb_line": "LINER",
+      "candidate_lines": [
+        "LINER",
+        "RUNNER",
+        "SNEAKERS",
+        "CHUNKY",
+        "OUTDOOR",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "이미지에서 어퍼·솔·비례·기능 구조로 최종 판정",
+      "override_rule": "상품명·브랜드명만으로 라인 결정 금지",
+      "default_subcategory": "LINE_BY_IMAGE",
+      "secondary_attribute": "source_broad=true",
+      "exclusion_rule": "증거 부족 시 REVIEW_REQUIRED"
+    },
+    {
+      "source_category": "스니커즈",
+      "source_product_type": "슬립온",
+      "default_mlb_line": "LINER",
+      "candidate_lines": [
+        "LINER",
+        "SNEAKERS",
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "오픈 힐이 없는 기본 슬립온은 LINER",
+      "override_rule": "극저상 무술·발레형은 SNEAKERS, 오픈 힐은 SUMMER",
+      "default_subcategory": "LINER_CLASSIC_SLIPON",
+      "secondary_attribute": "closure=SLIPON",
+      "exclusion_rule": "스니커 구조가 없는 실내화는 SUMMER 참고"
+    },
+    {
+      "source_category": "스니커즈",
+      "source_product_type": "스케이트 보드화",
+      "default_mlb_line": "LINER",
+      "candidate_lines": [
+        "LINER",
+        "CHUNKY"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "기본 스케이트 원형은 LINER",
+      "override_rule": "솔이 높아도 직선 컵솔 구조 유지 시 LINER; 전체 벌키 볼륨일 때만 CHUNKY",
+      "default_subcategory": "LINER_SKATE",
+      "secondary_attribute": "base=SKATE",
+      "exclusion_rule": "실제 보호 장비형 특수화는 참고"
+    },
+    {
+      "source_category": "샌들/슬리퍼",
+      "source_product_type": "쪼리/플립플랍",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "완전 개방형 여름 포맷",
+      "override_rule": "아웃도어 디테일 유무와 무관하게 1차는 SUMMER",
+      "default_subcategory": "SUMMER_FLIP_FLOP",
+      "secondary_attribute": "open_toe=true",
+      "exclusion_rule": "퍼·패딩 보온형은 WINTER ITEM"
+    },
+    {
+      "source_category": "샌들/슬리퍼",
+      "source_product_type": "슬라이드",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM",
+        "WINTER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "오픈 토·힐 슬라이드는 SUMMER ITEM",
+      "override_rule": "퍼·패딩·보온 소재가 지배하면 WINTER",
+      "default_subcategory": "SUMMER_SLIDE",
+      "secondary_attribute": "open_heel=true",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "샌들/슬리퍼",
+      "source_product_type": "스포츠/캐주얼 샌들",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "스트랩·개방형 스포츠 샌들 전체",
+      "override_rule": "러너 솔이어도 개방형이면 SUMMER",
+      "default_subcategory": "SUMMER_SPORT_CASUAL_SANDAL",
+      "secondary_attribute": "base=SPORT 가능",
+      "exclusion_rule": "퍼·패딩 보온형은 WINTER"
+    },
+    {
+      "source_category": "샌들/슬리퍼",
+      "source_product_type": "아웃도어 샌들",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "아웃도어 기능을 가진 샌들도 1차 라벨은 SUMMER ITEM",
+      "override_rule": "outdoor=true를 보조 태그로만 저장",
+      "default_subcategory": "SUMMER_OUTDOOR_SANDAL",
+      "secondary_attribute": "outdoor=true",
+      "exclusion_rule": "폐쇄형 하이킹화는 OUTDOOR"
+    },
+    {
+      "source_category": "샌들/슬리퍼",
+      "source_product_type": "기타 슬리퍼",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM",
+        "WINTER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "일반 오픈형 슬리퍼는 SUMMER ITEM",
+      "override_rule": "퍼·패딩·보온이 지배하면 WINTER",
+      "default_subcategory": "SUMMER_INDOOR_SLIPPER",
+      "secondary_attribute": "open_heel=true",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "샌들/슬리퍼",
+      "source_product_type": "클로그",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM",
+        "WINTER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "클로그 포맷은 SUMMER ITEM",
+      "override_rule": "퍼·패딩 보온 클로그만 WINTER",
+      "default_subcategory": "SUMMER_CLOG",
+      "secondary_attribute": "format=CLOG",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "샌들/슬리퍼",
+      "source_product_type": "스트랩 슬리퍼",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "오픈형 스트랩 슬리퍼",
+      "override_rule": "아웃도어 러그가 있어도 SUMMER",
+      "default_subcategory": "SUMMER_SLIDE",
+      "secondary_attribute": "strap=true",
+      "exclusion_rule": "퍼·패딩 보온형은 WINTER"
+    },
+    {
+      "source_category": "샌들/슬리퍼",
+      "source_product_type": "스트랩 샌들",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "스트랩과 개방 구조가 핵심",
+      "override_rule": "스니커 솔을 사용해도 SUMMER",
+      "default_subcategory": "SUMMER_STRAP_SLINGBACK",
+      "secondary_attribute": "strap=true",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "샌들/슬리퍼",
+      "source_product_type": "슬링백 샌들",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "오픈 토 또는 샌들 케이지가 있는 슬링백",
+      "override_rule": "폐쇄형 저상 스니커는 SNEAKERS로 재판정",
+      "default_subcategory": "SUMMER_STRAP_SLINGBACK",
+      "secondary_attribute": "slingback=true",
+      "exclusion_rule": "폐쇄형 구두 슬링백은 별도 판정"
+    },
+    {
+      "source_category": "샌들/슬리퍼",
+      "source_product_type": "실내화",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM",
+        "WINTER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "일반 오픈형 실내 슬리퍼는 SUMMER ITEM",
+      "override_rule": "퍼·패딩 겨울 실내화는 WINTER",
+      "default_subcategory": "SUMMER_INDOOR_SLIPPER",
+      "secondary_attribute": "usage=INDOOR",
+      "exclusion_rule": "폐쇄형 기능 실내화는 구조 재판정"
+    },
+    {
+      "source_category": "샌들/슬리퍼",
+      "source_product_type": "기타 샌들",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "샌들로 확인되는 개방형 전체",
+      "override_rule": "아웃도어·러닝 디테일은 보조 태그",
+      "default_subcategory": "SUMMER_SPORT_CASUAL_SANDAL",
+      "secondary_attribute": "format=SANDAL",
+      "exclusion_rule": "퍼·패딩 보온형은 WINTER"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "웨지힐",
+      "default_mlb_line": "NEW LINE",
+      "candidate_lines": [
+        "NEW LINE",
+        "CHUNKY",
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "스니커 어퍼·솔과 구조적으로 결합한 경우만 MLB 라인 입력",
+      "override_rule": "개방 샌들형은 SUMMER, 전체 볼륨이 지배하면 CHUNKY",
+      "default_subcategory": "NEW_NONSEASON_HYBRID",
+      "secondary_attribute": "dress_origin=WEDGE",
+      "exclusion_rule": "전통 웨지힐은 MLB 스니커 라인 대상 외"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "스트레이트 팁",
+      "default_mlb_line": "NEW LINE",
+      "candidate_lines": [
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "스트레이트 팁 어퍼+쿠셔닝 스니커 솔 결합 시",
+      "override_rule": "새 소재만 적용한 구두는 NEW가 아님",
+      "default_subcategory": "NEW_DRESS_SNEAKER",
+      "secondary_attribute": "dress_origin=CAP_TOE",
+      "exclusion_rule": "전통 구두는 대상 외"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "힐/펌프스",
+      "default_mlb_line": "NEW LINE",
+      "candidate_lines": [
+        "NEW LINE",
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "스니커 구조가 결합된 신유형일 때만 NEW",
+      "override_rule": "오픈 토·백리스 포맷은 SUMMER",
+      "default_subcategory": "NEW_NONSEASON_HYBRID",
+      "secondary_attribute": "dress_origin=PUMP",
+      "exclusion_rule": "전통 힐·펌프스는 대상 외"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "더비 슈즈",
+      "default_mlb_line": "NEW LINE",
+      "candidate_lines": [
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "더비 어퍼와 러닝·스니커 솔의 구조적 결합",
+      "override_rule": "얇은 고무창만 적용한 더비는 제외",
+      "default_subcategory": "NEW_DRESS_SNEAKER",
+      "secondary_attribute": "dress_origin=DERBY",
+      "exclusion_rule": "전통 더비는 대상 외"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "로퍼",
+      "default_mlb_line": "NEW LINE",
+      "candidate_lines": [
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "로퍼 어퍼+폼·러닝·스니커 솔이면 Snoafer",
+      "override_rule": "순수 로퍼는 NEW LINE이 아님",
+      "default_subcategory": "NEW_SNOAFER",
+      "secondary_attribute": "dress_origin=LOAFER",
+      "exclusion_rule": "전통 로퍼는 대상 외"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "보트 슈즈",
+      "default_mlb_line": "LINER",
+      "candidate_lines": [
+        "LINER",
+        "SUMMER ITEM",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "폐쇄형 캐주얼 어퍼+평평한 스니커 컵솔이면 LINER",
+      "override_rule": "뮬·백리스는 SUMMER, 러닝 솔 하이브리드는 NEW",
+      "default_subcategory": "LINER_BASIC_MINIMAL",
+      "secondary_attribute": "dress_origin=BOAT",
+      "exclusion_rule": "전통 보트 슈즈는 참고 데이터"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "플랫 슈즈",
+      "default_mlb_line": "SNEAKERS",
+      "candidate_lines": [
+        "SNEAKERS",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "발레·무술형 저상 스니커 구조일 때 SNEAKERS",
+      "override_rule": "순수 플랫은 대상 외",
+      "default_subcategory": "SNEAKERS_BALLET",
+      "secondary_attribute": "dress_origin=FLAT",
+      "exclusion_rule": "스니커 솔·어퍼 증거가 없으면 제외"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "플레인 토",
+      "default_mlb_line": "NEW LINE",
+      "candidate_lines": [
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "플레인 토 구두 어퍼+스니커 솔 결합",
+      "override_rule": "일반 구두는 제외",
+      "default_subcategory": "NEW_DRESS_SNEAKER",
+      "secondary_attribute": "dress_origin=PLAIN_TOE",
+      "exclusion_rule": "전통 플레인 토는 대상 외"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "슬링백",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM",
+        "SNEAKERS",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "오픈 토·오픈 힐 중심이면 SUMMER",
+      "override_rule": "폐쇄형 저상 스니커 슬링백은 SNEAKERS",
+      "default_subcategory": "SUMMER_STRAP_SLINGBACK",
+      "secondary_attribute": "slingback=true",
+      "exclusion_rule": "전통 구두 슬링백은 참고 데이터"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "블로퍼",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM",
+        "WINTER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "백리스 로퍼·뮬 포맷이므로 SUMMER ITEM",
+      "override_rule": "퍼·패딩 보온 블로퍼는 WINTER",
+      "default_subcategory": "SUMMER_MULE_BLOAFER",
+      "secondary_attribute": "dress_origin=LOAFER",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "모카신",
+      "default_mlb_line": "NEW LINE",
+      "candidate_lines": [
+        "NEW LINE",
+        "WINTER ITEM"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "모카신·로퍼 어퍼+스니커 솔이면 Snoafer",
+      "override_rule": "퍼·쉐어링 보온형은 WINTER",
+      "default_subcategory": "NEW_SNOAFER",
+      "secondary_attribute": "dress_origin=MOCCASIN",
+      "exclusion_rule": "전통 모카신은 대상 외"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "기타 구두",
+      "default_mlb_line": "NEW LINE",
+      "candidate_lines": [
+        "NEW LINE",
+        "SNEAKERS",
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "스니커 구조 결합이 확인될 때만 후보 라인 판정",
+      "override_rule": "기타라는 이유만으로 NEW에 자동 입력 금지",
+      "default_subcategory": "NEW_EMERGING_ARCHETYPE",
+      "secondary_attribute": "source_broad=true",
+      "exclusion_rule": "스니커 구조가 없으면 대상 외"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "몽크 스트랩",
+      "default_mlb_line": "NEW LINE",
+      "candidate_lines": [
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "몽크 어퍼+스니커 솔 결합 시",
+      "override_rule": "버클 장식만 새로우면 NEW가 아님",
+      "default_subcategory": "NEW_DRESS_SNEAKER",
+      "secondary_attribute": "dress_origin=MONK",
+      "exclusion_rule": "전통 몽크는 대상 외"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "윙 팁",
+      "default_mlb_line": "NEW LINE",
+      "candidate_lines": [
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "브로그·윙팁 어퍼+스니커 솔 결합 시",
+      "override_rule": "전통 윙팁은 제외",
+      "default_subcategory": "NEW_DRESS_SNEAKER",
+      "secondary_attribute": "dress_origin=WINGTIP",
+      "exclusion_rule": "전통 윙팁은 대상 외"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "플랫폼",
+      "default_mlb_line": "CHUNKY",
+      "candidate_lines": [
+        "LINER",
+        "CHUNKY",
+        "SUMMER ITEM",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "스니커 구조가 있고 전체 부피가 지배하면 CHUNKY",
+      "override_rule": "LINER 원형+직선 높은 솔은 LINER; 개방형은 SUMMER",
+      "default_subcategory": "CHUNKY_VOLUME_PLATFORM",
+      "secondary_attribute": "platform=true",
+      "exclusion_rule": "전통 플랫폼 구두는 대상 외"
+    },
+    {
+      "source_category": "구두",
+      "source_product_type": "메리제인 슈즈",
+      "default_mlb_line": "NEW LINE",
+      "candidate_lines": [
+        "SNEAKERS",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "스니커즈 솔·스포츠 어퍼 구조가 확인되면 SNEAKERS, 일반 구두 구조이면 NEW LINE",
+      "override_rule": "굽 높이는 판정 기준이 아님. 스니커즈형 메리제인은 SNEAKERS로 고정",
+      "default_subcategory": "NEW_MARYJANE_DRESS",
+      "secondary_attribute": "maryjane=true",
+      "exclusion_rule": "제외하지 않고 두 라인 중 하나로 판정"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "러닝화",
+      "default_mlb_line": "RUNNER",
+      "candidate_lines": [
+        "RUNNER",
+        "OUTDOOR"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "러닝 구조가 제품을 지배하므로 RUNNER",
+      "override_rule": "트레일 러그·방수·보호 구조가 강하면 OUTDOOR",
+      "default_subcategory": "RUNNER_MODERN_PERFORMANCE",
+      "secondary_attribute": "base=RUNNER",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "축구화",
+      "default_mlb_line": "SNEAKERS",
+      "candidate_lines": [
+        "SNEAKERS"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "테라스·인도어·라이프스타일 전환형은 SNEAKERS",
+      "override_rule": "낮고 슬림한 T-toe·검솔 구조 확인",
+      "default_subcategory": "SNEAKERS_TERRACE",
+      "secondary_attribute": "sport_origin=FOOTBALL",
+      "exclusion_rule": "스터드 경기화는 추천 대상에서 제외 또는 참고"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "피트니스화",
+      "default_mlb_line": "RUNNER",
+      "candidate_lines": [
+        "RUNNER",
+        "SNEAKERS"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "메시·폼·지지 구조 중심이면 RUNNER",
+      "override_rule": "얇고 발 밀착된 스튜디오형은 SNEAKERS",
+      "default_subcategory": "RUNNER_MODERN_PERFORMANCE",
+      "secondary_attribute": "sport_origin=FITNESS",
+      "exclusion_rule": "특수 리프팅화는 참고"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "농구화",
+      "default_mlb_line": "LINER",
+      "candidate_lines": [
+        "LINER",
+        "RUNNER",
+        "CHUNKY"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "레트로 덩크·컵솔은 LINER",
+      "override_rule": "기능 폼·메시는 RUNNER, 패션 볼륨만 지배하면 CHUNKY",
+      "default_subcategory": "LINER_DUNK_BASKET",
+      "secondary_attribute": "sport_origin=BASKETBALL",
+      "exclusion_rule": "경기 전용 여부는 별도 태그"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "야구화",
+      "default_mlb_line": "LINER",
+      "candidate_lines": [
+        "LINER",
+        "RUNNER"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "스파이크리스 라이프스타일 전환형은 구조에 따라 LINER/RUNNER",
+      "override_rule": "MLB 헤리티지 참고 태그 유지",
+      "default_subcategory": "LINER_DUNK_BASKET",
+      "secondary_attribute": "sport_origin=BASEBALL",
+      "exclusion_rule": "스파이크 경기화는 추천 대상에서 제외 또는 참고"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "기타 운동화",
+      "default_mlb_line": "LINER",
+      "candidate_lines": [
+        "LINER",
+        "RUNNER",
+        "SNEAKERS",
+        "CHUNKY",
+        "OUTDOOR",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "상품유형명이 넓으므로 이미지 구조로 재판정",
+      "override_rule": "계절 포맷이면 SUMMER/WINTER를 먼저 적용",
+      "default_subcategory": "LINE_BY_IMAGE",
+      "secondary_attribute": "source_broad=true",
+      "exclusion_rule": "증거 부족 시 REVIEW_REQUIRED"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "부츠/전술화",
+      "default_mlb_line": "OUTDOOR",
+      "candidate_lines": [
+        "OUTDOOR",
+        "WINTER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "보호·내구·전술 구조가 핵심이므로 OUTDOOR",
+      "override_rule": "퍼·패딩·보온이 더 강하면 WINTER",
+      "default_subcategory": "OUTDOOR_TACTICAL_UTILITY",
+      "secondary_attribute": "utility=true",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "골프화",
+      "default_mlb_line": "OUTDOOR",
+      "candidate_lines": [
+        "OUTDOOR",
+        "LINER",
+        "RUNNER"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "방수·접지·지면 대응이 핵심이면 OUTDOOR",
+      "override_rule": "가죽 컵솔형은 LINER, 러너형 스파이크리스는 RUNNER",
+      "default_subcategory": "OUTDOOR_WEATHER_RAIN",
+      "secondary_attribute": "sport_origin=GOLF",
+      "exclusion_rule": "금속 스파이크 경기 전용은 참고"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "등산화",
+      "default_mlb_line": "OUTDOOR",
+      "candidate_lines": [
+        "OUTDOOR"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "산악 접지·보호·방수 구조",
+      "override_rule": "부츠 높이보다 아웃도어 기능을 우선",
+      "default_subcategory": "OUTDOOR_HIKING",
+      "secondary_attribute": "outdoor=true",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "복싱/격투화",
+      "default_mlb_line": "SNEAKERS",
+      "candidate_lines": [
+        "SNEAKERS"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "발 밀착·얇은 솔의 라이프스타일 전환형은 SNEAKERS",
+      "override_rule": "무술·복싱 원형을 서브카테고리로 저장",
+      "default_subcategory": "SNEAKERS_MARTIAL_ARTS",
+      "secondary_attribute": "sport_origin=COMBAT",
+      "exclusion_rule": "실제 경기 전용 장비는 참고"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "트레킹화",
+      "default_mlb_line": "OUTDOOR",
+      "candidate_lines": [
+        "OUTDOOR"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "러그·보호·장거리 보행 구조",
+      "override_rule": "러너 베이스여도 트레일 신호가 강하면 OUTDOOR",
+      "default_subcategory": "OUTDOOR_TREKKING_APPROACH",
+      "secondary_attribute": "outdoor=true",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "자전거화",
+      "default_mlb_line": "SNEAKERS",
+      "candidate_lines": [
+        "SNEAKERS",
+        "OUTDOOR"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "슬림 레이싱·라이프스타일 전환형은 SNEAKERS",
+      "override_rule": "MTB 러그·보호 구조가 강하면 OUTDOOR",
+      "default_subcategory": "SNEAKERS_RACING_DRIVING",
+      "secondary_attribute": "sport_origin=CYCLING",
+      "exclusion_rule": "클릿 경기화는 추천 대상에서 제외 또는 참고"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "탁구화",
+      "default_mlb_line": "SNEAKERS",
+      "candidate_lines": [
+        "SNEAKERS",
+        "LINER"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "낮고 발에 붙는 검솔형은 SNEAKERS",
+      "override_rule": "일반 코트 컵솔 비례면 LINER",
+      "default_subcategory": "SNEAKERS_SLIM_RETRO",
+      "secondary_attribute": "sport_origin=TABLE_TENNIS",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "테니스화",
+      "default_mlb_line": "LINER",
+      "candidate_lines": [
+        "LINER",
+        "RUNNER"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "레트로 가죽 코트형은 LINER",
+      "override_rule": "기능성 메시·폼·지지 구조는 RUNNER",
+      "default_subcategory": "LINER_COURT_TENNIS",
+      "secondary_attribute": "sport_origin=TENNIS",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "인도어화",
+      "default_mlb_line": "SNEAKERS",
+      "candidate_lines": [
+        "SNEAKERS",
+        "LINER",
+        "RUNNER"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "저상 검솔·발 밀착형은 SNEAKERS",
+      "override_rule": "일반 코트는 LINER, 기능 퍼포먼스는 RUNNER",
+      "default_subcategory": "SNEAKERS_TERRACE",
+      "secondary_attribute": "sport_origin=INDOOR",
+      "exclusion_rule": "특수 경기 전용은 참고"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "다이빙 부츠",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM",
+        "WINTER ITEM"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "수상·아쿠아 시즌 참고군은 SUMMER ITEM",
+      "override_rule": "두꺼운 보온 네오프렌 특수장비는 WINTER 참고 또는 대상 외",
+      "default_subcategory": "SUMMER_WATER_AQUA",
+      "secondary_attribute": "water=true",
+      "exclusion_rule": "전문 잠수 장비는 추천 대상 외"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "워터스포츠화",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "수상·배수·속건 여름 기능형",
+      "override_rule": "폐쇄형이어도 수상 사용성이 핵심이면 SUMMER",
+      "default_subcategory": "SUMMER_WATER_AQUA",
+      "secondary_attribute": "water=true",
+      "exclusion_rule": "전문 경기 장비는 참고"
+    },
+    {
+      "source_category": "스포츠화",
+      "source_product_type": "아쿠아 슈즈",
+      "default_mlb_line": "SUMMER ITEM",
+      "candidate_lines": [
+        "SUMMER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "물놀이·배수·속건형은 SUMMER ITEM",
+      "override_rule": "발 밀착 저상 구조는 보조 태그 SNEAKERS_BASE",
+      "default_subcategory": "SUMMER_WATER_AQUA",
+      "secondary_attribute": "water=true",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "패딩/퍼 신발",
+      "source_product_type": "패딩/퍼 부츠",
+      "default_mlb_line": "WINTER ITEM",
+      "candidate_lines": [
+        "WINTER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "패딩·퍼·보온 부츠 전체",
+      "override_rule": "아웃도어 러그가 있어도 보온 소재가 지배하면 WINTER",
+      "default_subcategory": "WINTER_PUFFER_BOOT",
+      "secondary_attribute": "winter=true",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "패딩/퍼 신발",
+      "source_product_type": "패딩/퍼 슬리퍼",
+      "default_mlb_line": "WINTER ITEM",
+      "candidate_lines": [
+        "WINTER ITEM"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "형태가 슬리퍼여도 패딩·퍼·보온이 지배하므로 WINTER",
+      "override_rule": "SUMMER ITEM보다 WINTER 우선",
+      "default_subcategory": "WINTER_PADDED_FUR_SLIPPER",
+      "secondary_attribute": "open_heel=true",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "부츠/워커",
+      "source_product_type": "레인 부츠",
+      "default_mlb_line": "OUTDOOR",
+      "candidate_lines": [
+        "OUTDOOR"
+      ],
+      "mapping_mode": "직접",
+      "inclusion_rule": "방수·웨더 대응이 핵심이므로 OUTDOOR",
+      "override_rule": "겨울 보온보다 방수 기능을 우선",
+      "default_subcategory": "OUTDOOR_WEATHER_RAIN",
+      "secondary_attribute": "weather=RAIN",
+      "exclusion_rule": "없음"
+    },
+    {
+      "source_category": "부츠/워커",
+      "source_product_type": "워커",
+      "default_mlb_line": "OUTDOOR",
+      "candidate_lines": [
+        "OUTDOOR",
+        "WINTER ITEM",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "보호·접지·유틸리티 구조는 OUTDOOR",
+      "override_rule": "퍼·패딩은 WINTER, 비시즌 스니커 하이브리드는 NEW",
+      "default_subcategory": "OUTDOOR_TACTICAL_UTILITY",
+      "secondary_attribute": "boot=true",
+      "exclusion_rule": "순수 드레스 워커는 참고"
+    },
+    {
+      "source_category": "부츠/워커",
+      "source_product_type": "니하이 부츠",
+      "default_mlb_line": "WINTER ITEM",
+      "candidate_lines": [
+        "WINTER ITEM",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "겨울 시즌 패션 부츠는 WINTER ITEM",
+      "override_rule": "비시즌 스니커 구조 혁신이 핵심일 때만 NEW",
+      "default_subcategory": "WINTER_FASHION_BOOT",
+      "secondary_attribute": "boot_height=KNEE_HIGH",
+      "exclusion_rule": "전통 구두형은 스니커 추천 대상에서 제외 가능"
+    },
+    {
+      "source_category": "부츠/워커",
+      "source_product_type": "앵클/숏 부츠",
+      "default_mlb_line": "WINTER ITEM",
+      "candidate_lines": [
+        "WINTER ITEM",
+        "OUTDOOR",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "겨울 소재·시즌성이 있으면 WINTER",
+      "override_rule": "방수·러그·보호는 OUTDOOR, 비시즌 스니커 하이브리드는 NEW",
+      "default_subcategory": "WINTER_FASHION_BOOT",
+      "secondary_attribute": "boot_height=ANKLE",
+      "exclusion_rule": "전통 구두형은 참고"
+    },
+    {
+      "source_category": "부츠/워커",
+      "source_product_type": "기타 부츠",
+      "default_mlb_line": "WINTER ITEM",
+      "candidate_lines": [
+        "WINTER ITEM",
+        "OUTDOOR",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "소재·기능·시즌성으로 재판정",
+      "override_rule": "기타라는 이유만으로 NEW에 자동 입력 금지",
+      "default_subcategory": "WINTER_FASHION_BOOT",
+      "secondary_attribute": "source_broad=true",
+      "exclusion_rule": "증거 부족 시 REVIEW_REQUIRED"
+    },
+    {
+      "source_category": "부츠/워커",
+      "source_product_type": "미들/하프 부츠",
+      "default_mlb_line": "WINTER ITEM",
+      "candidate_lines": [
+        "WINTER ITEM",
+        "OUTDOOR",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "겨울 시즌형은 WINTER",
+      "override_rule": "러그·방수·보호는 OUTDOOR, 비시즌 하이브리드는 NEW",
+      "default_subcategory": "WINTER_FASHION_BOOT",
+      "secondary_attribute": "boot_height=MID",
+      "exclusion_rule": "전통 구두형은 참고"
+    },
+    {
+      "source_category": "부츠/워커",
+      "source_product_type": "롱 부츠",
+      "default_mlb_line": "WINTER ITEM",
+      "candidate_lines": [
+        "WINTER ITEM",
+        "NEW LINE"
+      ],
+      "mapping_mode": "조건부",
+      "inclusion_rule": "롱 부츠의 겨울 시즌성이 핵심이면 WINTER",
+      "override_rule": "비시즌 스니커 구조 혁신이 명확할 때만 NEW",
+      "default_subcategory": "WINTER_FASHION_BOOT",
+      "secondary_attribute": "boot_height=LONG",
+      "exclusion_rule": "전통 구두형은 스니커 추천 대상에서 제외 가능"
+    }
+  ],
+  "fields": [
+    {
+      "field": "source_category",
+      "type": "text",
+      "example": "스니커즈",
+      "required": "필수",
+      "description": "무신사 대분류 원본"
+    },
+    {
+      "field": "source_product_type",
+      "type": "text",
+      "example": "스케이트 보드화",
+      "required": "필수",
+      "description": "무신사 상품유형 원본"
+    },
+    {
+      "field": "mlb_line",
+      "type": "enum",
+      "example": "LINER",
+      "required": "필수",
+      "description": "8개 값만 허용"
+    },
+    {
+      "field": "mlb_subcategory",
+      "type": "text",
+      "example": "LINER_SKATE",
+      "required": "필수",
+      "description": "정의서의 시스템 코드"
+    },
+    {
+      "field": "base_archetype",
+      "type": "text",
+      "example": "LINER",
+      "required": "선택",
+      "description": "SUMMER/OUTDOOR/WINTER에 가려진 기본 원형"
+    },
+    {
+      "field": "season_override",
+      "type": "enum",
+      "example": "SUMMER | WINTER | NONE",
+      "required": "필수",
+      "description": "시즌 우선 적용 기록"
+    },
+    {
+      "field": "outdoor_attribute",
+      "type": "boolean",
+      "example": "true",
+      "required": "필수",
+      "description": "SUMMER 아웃도어 샌들처럼 보조 특성 보존"
+    },
+    {
+      "field": "sole_height_level",
+      "type": "integer",
+      "example": "4",
+      "required": "필수",
+      "description": "1~5 솔 높이 등급. 4는 LV Tatic 기준"
+    },
+    {
+      "field": "sole_sculpture_level",
+      "type": "integer",
+      "example": "4",
+      "required": "필수",
+      "description": "1~5 솔 요철·파동·돌출·분절 조형 등급"
+    },
+    {
+      "field": "sole_dominance",
+      "type": "boolean",
+      "example": "true",
+      "required": "필수",
+      "description": "솔이 어퍼 원형보다 전체 외곽선과 시각적 무게를 지배하는지 여부"
+    },
+    {
+      "field": "reference_case_id",
+      "type": "text/null",
+      "example": "LV_TATIC_RUNNER_1AKC33",
+      "required": "선택",
+      "description": "가장 가까운 사용자 확정 기준 사례"
+    },
+    {
+      "field": "evidence_json",
+      "type": "jsonb",
+      "example": "{\"open_heel\":true}",
+      "required": "필수",
+      "description": "이미지 판정 증거"
+    },
+    {
+      "field": "classification_confidence",
+      "type": "numeric",
+      "example": "0.86",
+      "required": "필수",
+      "description": "0~1 신뢰도"
+    },
+    {
+      "field": "review_status",
+      "type": "enum",
+      "example": "AI_CONFIRMED",
+      "required": "필수",
+      "description": "AI_CONFIRMED | REVIEW_REQUIRED | USER_CONFIRMED | OUT_OF_SCOPE"
+    },
+    {
+      "field": "user_confirmed_line",
+      "type": "enum/null",
+      "example": "LINER",
+      "required": "선택",
+      "description": "사용자 확정 라벨"
+    },
+    {
+      "field": "user_confirmed_subcategory",
+      "type": "text/null",
+      "example": "LINER_SKATE",
+      "required": "선택",
+      "description": "사용자 확정 서브카테고리"
+    },
+    {
+      "field": "taxonomy_version",
+      "type": "text",
+      "example": "v2.2",
+      "required": "필수",
+      "description": "정의 변경 이력"
+    }
+  ]
+}

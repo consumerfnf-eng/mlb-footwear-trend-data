@@ -1,0 +1,1550 @@
+{
+  "brand": "MLB",
+  "product_domain": "FOOTWEAR",
+  "schema_version": "1.0",
+  "updated_at": "2026-07-24",
+  "active": true,
+  "purpose": [
+    "글로벌 신발 상품 이미지와 공식 설명을 동일한 기준으로 라벨링",
+    "MLB 8개 카테고리와 서브카테고리 자동 분류",
+    "PREMIUM SPORTIVE, STREET, FEMININE, WELLNESS 라이프스타일 DNA 분류",
+    "Supabase 검색·필터·차트·추천 점수 계산",
+    "MLB 디자인 제안 및 이미지 생성 프롬프트 구성",
+    "사용자 확정값을 다음 분류의 기준 사례로 재사용"
+  ],
+  "dependencies": {
+    "category_taxonomy": "MLB_Musinsa_8Line_Footwear_Taxonomy_v2_2.json",
+    "category_taxonomy_version": "2.2",
+    "lifestyle_dna": "MLB_Footwear_Lifestyle_DNA_Config_v1_1.json",
+    "lifestyle_dna_version": "1.1"
+  },
+  "design_principles": {
+    "category_basis": "카테고리는 컬러·프린트가 아니라 시즌성, 착화 포맷, 기본 원형, 어퍼 구조, 솔 구조와 기능으로 판정",
+    "lifestyle_basis": "라이프스타일은 카테고리와 독립적으로 소재 감도, 비례, 디테일 표현, 기능, 사용 장면으로 판정",
+    "controlled_vocabulary": "차트와 AI 학습에 사용하는 값은 통제 어휘를 사용하고 브랜드 원문은 raw 필드에 별도 보존",
+    "max_upper_materials": 3,
+    "max_representative_colors": 3,
+    "user_override_priority": "사용자 확정값이 AI 판정값보다 항상 우선",
+    "new_line_guard": "NEW LINE을 기타·미분류 상품을 버리는 항목으로 사용하지 않음"
+  },
+  "classification_engine": {
+    "input_sequence": [
+      "SOURCE_METADATA",
+      "FORM_AND_STRUCTURE",
+      "SOLE",
+      "UPPER_MATERIAL",
+      "DETAIL",
+      "PRINT_PATTERN",
+      "BRANDING",
+      "COLOR",
+      "FUNCTION",
+      "CATEGORY",
+      "LIFESTYLE",
+      "REVIEW"
+    ],
+    "derived_flags": {
+      "winter_dominance": "insulation=true OR fur_coverage IN [MAJOR,FULL] OR padded_upper_coverage IN [MAJOR,FULL] OR official_season_signal=WINTER",
+      "open_format": "open_toe=true OR open_heel=true OR backless=true OR base_archetype IN [SANDAL,SLIDE,MULE,CLOG,FLIP_FLOP]",
+      "outdoor_score": "COUNT_TRUE(aggressive_lug, waterproof, water_repellent, ripstop, protective_toe, webbing, quick_lace, gaiter, drainage, ankle_protection, trail_grip)",
+      "new_line_gate": "mary_jane_dress=true OR formal_upper_sport_sole_hybrid=true OR modular_convertible=true OR verified_nonseason_hybrid=true",
+      "sneaker_mary_jane": "base_archetype=MARY_JANE_SNEAKER AND sneaker_sole=true",
+      "low_profile_gate": "sole_height_level<=2 AND upper_volume=SLIM AND toe_height=LOW AND foot_hugging=true AND base_archetype IN [TERRACE,RACING,DRIVING,MARTIAL_ARTS,BALLET,SLIM_RETRO_TRAINER]",
+      "liner_archetype": "base_archetype IN [BASIC,COURT,TENNIS,DUNK,BASKET_HERITAGE,SKATE,CANVAS,VULCANIZED,CLASSIC_SLIP_ON]",
+      "liner_precedence": "liner_archetype=true AND sole_continuity=true AND sole_sculpture_level<=2",
+      "chunky_gate": "sole_height_level>=4 AND sole_sculpture_level>=3 AND sole_dominance=true",
+      "runner_score": "COUNT_TRUE(mesh_upper, foam_midsole, heel_counter, heel_support, toe_spring, rocker, heel_to_toe_drop, segmented_outsole, running_last)",
+      "material_mix": "COUNT_DISTINCT(upper_materials.material_type)>=2",
+      "monogram": "pattern_motif=MONOGRAM",
+      "review_required": "classification_confidence<0.80 OR top_two_score_gap<0.12 OR required_visual_evidence_missing=true"
+    },
+    "priority_rules": [
+      {
+        "order": 1,
+        "result": "SOURCE_PRESERVED",
+        "condition": "항상 적용",
+        "rule": "브랜드 원문 카테고리, 상품유형, 상품명, 컬러명과 공식 설명을 수정하지 않고 보존"
+      },
+      {
+        "order": 2,
+        "result": "WINTER ITEM",
+        "condition": "winter_dominance=true",
+        "rule": "퍼 트림 하나가 아니라 퍼·쉐어링·패딩·보온 구조가 제품을 지배해야 함"
+      },
+      {
+        "order": 3,
+        "result": "SUMMER ITEM",
+        "condition": "open_format=true",
+        "rule": "샌들·슬리퍼·뮬·클로그·오픈 토·오픈 힐. 아웃도어 샌들과 스니커즈 뮬도 포함"
+      },
+      {
+        "order": 4,
+        "result": "OUTDOOR",
+        "condition": "open_format=false AND outdoor_score>=2",
+        "rule": "폐쇄형 신발에서 실제 아웃도어 구조·소재 신호가 2개 이상"
+      },
+      {
+        "order": 5,
+        "result": "NEW LINE",
+        "condition": "new_line_gate=true",
+        "rule": "일반 메리제인 구두, 스노퍼, 드레스 스니커, 모듈·비시즌 구조 하이브리드"
+      },
+      {
+        "order": 6,
+        "result": "SNEAKERS",
+        "condition": "sneaker_mary_jane=true OR low_profile_gate=true",
+        "rule": "스니커즈형 메리제인 또는 테라스·레이싱·무술·발레 등 발 밀착 저상 원형"
+      },
+      {
+        "order": 7,
+        "result": "LINER",
+        "condition": "liner_precedence=true",
+        "rule": "기본·코트·덩크·스케이트·캔버스 원형과 평평하고 연속적인 솔 구조 우선. 굽이 높아도 LINER"
+      },
+      {
+        "order": 8,
+        "result": "CHUNKY",
+        "condition": "chunky_gate=true",
+        "rule": "LV Tatic 기준. 높은 솔과 강한 요철·파동·분절이 전체 외곽선을 지배"
+      },
+      {
+        "order": 9,
+        "result": "RUNNER",
+        "condition": "runner_score>=3",
+        "rule": "러닝 구조 신호가 3개 이상이고 chunky_gate를 통과하지 않음"
+      },
+      {
+        "order": 10,
+        "result": "LINER",
+        "condition": "liner_archetype=true",
+        "rule": "남은 기본·코트·덩크·스케이트·캔버스 원형"
+      },
+      {
+        "order": 11,
+        "result": "REVIEW_REQUIRED",
+        "condition": "어느 필수 게이트도 충족하지 않음",
+        "rule": "NEW LINE으로 자동 전송하지 않고 사용자 검수 요청"
+      }
+    ],
+    "category_subcategories": {
+      "LINER": [
+        "LINER_BASIC_MINIMAL",
+        "LINER_COURT_TENNIS",
+        "LINER_DUNK_BASKET",
+        "LINER_SKATE",
+        "LINER_CANVAS_VULCANIZED",
+        "LINER_CLASSIC_SLIPON",
+        "LINER_PLATFORM"
+      ],
+      "RUNNER": [
+        "RUNNER_RETRO",
+        "RUNNER_Y2K_TECH",
+        "RUNNER_MODERN_PERFORMANCE",
+        "RUNNER_MAX_CUSHION",
+        "RUNNER_TECH_LIFESTYLE",
+        "RUNNER_FASHION"
+      ],
+      "SNEAKERS": [
+        "SNEAKERS_TERRACE",
+        "SNEAKERS_RACING_DRIVING",
+        "SNEAKERS_SLIM_RETRO",
+        "SNEAKERS_MARTIAL_ARTS",
+        "SNEAKERS_BALLET",
+        "SNEAKERS_MARYJANE"
+      ],
+      "CHUNKY": [
+        "CHUNKY_DAD_SHOE",
+        "CHUNKY_SCULPTURAL",
+        "CHUNKY_SCULPTURAL_RUNNER",
+        "CHUNKY_BULKY_SKATE",
+        "CHUNKY_PUFFY_VOLUME",
+        "CHUNKY_VOLUME_PLATFORM"
+      ],
+      "OUTDOOR": [
+        "OUTDOOR_HIKING",
+        "OUTDOOR_TREKKING_APPROACH",
+        "OUTDOOR_TRAIL_RUNNER",
+        "OUTDOOR_GORPCORE",
+        "OUTDOOR_TACTICAL_UTILITY",
+        "OUTDOOR_WEATHER_RAIN"
+      ],
+      "SUMMER ITEM": [
+        "SUMMER_FLIP_FLOP",
+        "SUMMER_SLIDE",
+        "SUMMER_SPORT_CASUAL_SANDAL",
+        "SUMMER_OUTDOOR_SANDAL",
+        "SUMMER_STRAP_SLINGBACK",
+        "SUMMER_MULE_BLOAFER",
+        "SUMMER_CLOG",
+        "SUMMER_WATER_AQUA",
+        "SUMMER_INDOOR_SLIPPER"
+      ],
+      "WINTER ITEM": [
+        "WINTER_SHEARLING_UGG",
+        "WINTER_PUFFER_BOOT",
+        "WINTER_FUR_BOOT",
+        "WINTER_SNEAKER_BOOT",
+        "WINTER_PADDED_FUR_SLIPPER",
+        "WINTER_FASHION_BOOT"
+      ],
+      "NEW LINE": [
+        "NEW_SNOAFER",
+        "NEW_MARYJANE_DRESS",
+        "NEW_DRESS_SNEAKER",
+        "NEW_MODULAR_CONVERTIBLE",
+        "NEW_NONSEASON_HYBRID",
+        "NEW_EMERGING_ARCHETYPE"
+      ]
+    }
+  },
+  "attribute_schema": {
+    "source_metadata": [
+      {
+        "field": "brand",
+        "type": "text",
+        "required": true
+      },
+      {
+        "field": "product_name",
+        "type": "text",
+        "required": true
+      },
+      {
+        "field": "product_code",
+        "type": "text",
+        "required": false
+      },
+      {
+        "field": "source_url",
+        "type": "text",
+        "required": true
+      },
+      {
+        "field": "source_category",
+        "type": "text",
+        "required": false,
+        "description": "무신사·브랜드 사이트 원본 카테고리"
+      },
+      {
+        "field": "source_product_type",
+        "type": "text",
+        "required": false,
+        "description": "무신사·브랜드 사이트 원본 상품유형"
+      },
+      {
+        "field": "official_description",
+        "type": "text",
+        "required": false
+      },
+      {
+        "field": "image_urls",
+        "type": "text[]",
+        "required": true
+      }
+    ],
+    "classification_labels": [
+      {
+        "field": "mlb_line",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "LINER",
+          "RUNNER",
+          "SNEAKERS",
+          "CHUNKY",
+          "OUTDOOR",
+          "SUMMER ITEM",
+          "WINTER ITEM",
+          "NEW LINE"
+        ]
+      },
+      {
+        "field": "mlb_subcategory",
+        "type": "enum",
+        "required": true,
+        "values_source": "classification_engine.category_subcategories"
+      },
+      {
+        "field": "base_archetype",
+        "type": "enum",
+        "required": true,
+        "values_source": "controlled_vocabularies.base_archetype"
+      },
+      {
+        "field": "primary_lifestyle",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "PREMIUM SPORTIVE",
+          "STREET",
+          "FEMININE",
+          "WELLNESS"
+        ]
+      },
+      {
+        "field": "secondary_lifestyle",
+        "type": "enum/null",
+        "required": false,
+        "values": [
+          "PREMIUM SPORTIVE",
+          "STREET",
+          "FEMININE",
+          "WELLNESS"
+        ]
+      }
+    ],
+    "form_and_structure": [
+      {
+        "field": "toe_shape",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "ROUND",
+          "SLIM_ROUND",
+          "ALMOND",
+          "SQUARE",
+          "WIDE",
+          "POINTED"
+        ]
+      },
+      {
+        "field": "toe_height",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "LOW",
+          "STANDARD",
+          "HIGH"
+        ]
+      },
+      {
+        "field": "upper_volume",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "SLIM",
+          "STANDARD",
+          "PADDED",
+          "PUFFY",
+          "OVERSIZED"
+        ]
+      },
+      {
+        "field": "shoe_height",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "LOW",
+          "MID",
+          "HIGH",
+          "ANKLE",
+          "HALF_BOOT",
+          "KNEE_HIGH",
+          "LONG_BOOT"
+        ]
+      },
+      {
+        "field": "closure_types",
+        "type": "enum[]",
+        "max_items": 2,
+        "required": true,
+        "values": [
+          "LACE",
+          "SLIP_ON",
+          "MARY_JANE_STRAP",
+          "BUCKLE",
+          "ZIP",
+          "HOOK_AND_LOOP",
+          "TOGGLE",
+          "QUICK_LACE",
+          "ELASTIC",
+          "NONE"
+        ]
+      },
+      {
+        "field": "heel_structure",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "CLOSED",
+          "OPEN",
+          "BACKLESS",
+          "SLINGBACK",
+          "COLLAPSIBLE"
+        ]
+      },
+      {
+        "field": "foot_hugging",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "field": "last_width",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "NARROW",
+          "STANDARD",
+          "WIDE"
+        ]
+      },
+      {
+        "field": "panel_complexity",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "MINIMAL",
+          "TWO_TO_THREE_PANEL",
+          "MULTI_LAYER"
+        ]
+      }
+    ],
+    "sole": [
+      {
+        "field": "sole_height_level",
+        "type": "integer",
+        "range": "1-5",
+        "required": true,
+        "levels": {
+          "1": "0~15mm 또는 매우 얇은 저상 솔",
+          "2": "16~30mm 또는 일반적인 스니커즈 솔",
+          "3": "31~45mm 또는 눈에 띄게 높지만 태틱 기준 미만",
+          "4": "46~60mm 또는 LV Tatic 수준의 높은 솔",
+          "5": "61mm 이상 또는 극단적으로 높은 솔"
+        }
+      },
+      {
+        "field": "sole_height_source",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "OFFICIAL_MEASUREMENT",
+          "OFFICIAL_DESCRIPTION",
+          "IMAGE_ESTIMATED"
+        ]
+      },
+      {
+        "field": "heel_height_mm",
+        "type": "numeric/null",
+        "required": false
+      },
+      {
+        "field": "forefoot_height_mm",
+        "type": "numeric/null",
+        "required": false
+      },
+      {
+        "field": "heel_to_toe_drop_mm",
+        "type": "numeric/null",
+        "required": false
+      },
+      {
+        "field": "sole_geometry",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "FLAT",
+          "CUPSOLE",
+          "VULCANIZED",
+          "PLATFORM",
+          "WEDGE",
+          "ROCKER",
+          "SCULPTURAL",
+          "LUGGED",
+          "SEGMENTED"
+        ]
+      },
+      {
+        "field": "sole_sculpture_level",
+        "type": "integer",
+        "range": "1-5",
+        "required": true,
+        "levels": {
+          "1": "평평하고 연속적인 측벽",
+          "2": "약한 굴곡 또는 단순 레이어",
+          "3": "뚜렷한 요철·파동·러그",
+          "4": "강한 파동·돌출·분절·다층 조형",
+          "5": "극단적인 포드·공동·비정형 조각"
+        }
+      },
+      {
+        "field": "sole_continuity",
+        "type": "boolean",
+        "required": true,
+        "description": "솔 측벽이 평평하거나 큰 단절 없이 연속되는지"
+      },
+      {
+        "field": "sole_dominance",
+        "type": "boolean",
+        "required": true,
+        "description": "솔이 어퍼보다 전체 외곽선과 시각적 무게를 더 강하게 결정하는지"
+      },
+      {
+        "field": "tread_type",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "FLAT",
+          "GUM",
+          "HERRINGBONE",
+          "LUG",
+          "RIPPLE",
+          "POD",
+          "GEOMETRIC",
+          "STAR",
+          "MIXED"
+        ]
+      },
+      {
+        "field": "midsole_materials",
+        "type": "enum[]",
+        "max_items": 2,
+        "required": false,
+        "values": [
+          "EVA",
+          "PU",
+          "TPU",
+          "RUBBER",
+          "FOAM",
+          "LEATHER",
+          "CORK",
+          "UNKNOWN"
+        ]
+      },
+      {
+        "field": "outsole_materials",
+        "type": "enum[]",
+        "max_items": 2,
+        "required": false,
+        "values": [
+          "RUBBER",
+          "TPU",
+          "LEATHER",
+          "EVA",
+          "MIXED",
+          "UNKNOWN"
+        ]
+      }
+    ],
+    "upper_materials": {
+      "type": "object[]",
+      "max_items": 3,
+      "required": true,
+      "ranking_rule": "가시 면적과 구조적 중요도를 기준으로 MAIN, SECONDARY, ACCENT 순서로 최대 3개",
+      "item_fields": [
+        {
+          "field": "rank",
+          "type": "integer",
+          "range": "1-3"
+        },
+        {
+          "field": "material_family",
+          "type": "enum",
+          "values_source": "controlled_vocabularies.material_families"
+        },
+        {
+          "field": "material_type",
+          "type": "enum",
+          "values_source": "controlled_vocabularies.material_types"
+        },
+        {
+          "field": "surface_construction",
+          "type": "enum[]",
+          "max_items": 2,
+          "values_source": "controlled_vocabularies.surface_constructions"
+        },
+        {
+          "field": "role",
+          "type": "enum",
+          "values": [
+            "MAIN",
+            "SECONDARY",
+            "ACCENT"
+          ]
+        },
+        {
+          "field": "placement",
+          "type": "enum[]",
+          "max_items": 4,
+          "values_source": "controlled_vocabularies.upper_placements"
+        },
+        {
+          "field": "evidence_source",
+          "type": "enum",
+          "values": [
+            "OFFICIAL_DESCRIPTION",
+            "OFFICIAL_MATERIAL_LIST",
+            "IMAGE_INFERRED"
+          ]
+        },
+        {
+          "field": "confidence",
+          "type": "numeric",
+          "range": "0-1"
+        }
+      ]
+    },
+    "material_mix_policy": {
+      "material_mix_field": "material_mix",
+      "material_mix_type": "boolean",
+      "true_condition": "upper_materials에 서로 다른 material_type이 2개 이상",
+      "role_coverage_guide": {
+        "MAIN": "약 50% 이상 또는 제품 인상을 가장 강하게 결정",
+        "SECONDARY": "약 20~49% 또는 주요 구조 패널",
+        "ACCENT": "약 20% 미만이지만 식별 가능한 포인트"
+      },
+      "exclude_from_upper_mix": [
+        "LINING",
+        "INSOLE",
+        "MIDSOLE",
+        "OUTSOLE",
+        "작은 로고 프린트",
+        "미세한 스티치"
+      ],
+      "crochet_rule": "CROCHET는 섬유 소재가 아니라 조직 방식. material_type에 COTTON, SYNTHETIC_YARN, RAFFIA 등을 입력하고 surface_construction=CROCHET로 기록",
+      "coating_rule": "코팅이 독립 패널처럼 보이거나 기능을 만들면 소재로 포함. 단순 표면 마감이면 surface_construction=COATED로만 기록"
+    },
+    "details": {
+      "fur_trim": {
+        "field": "fur_trim",
+        "type": "boolean",
+        "required": true,
+        "child_fields": {
+          "fur_type": [
+            "SHEARLING",
+            "REAL_FUR",
+            "FAUX_FUR",
+            "FLEECE",
+            "LONG_HAIR",
+            "SHORT_HAIR"
+          ],
+          "fur_placement": [
+            "COLLAR",
+            "TONGUE",
+            "LINING",
+            "EDGE",
+            "VAMP",
+            "FULL_UPPER",
+            "FOOTBED"
+          ],
+          "fur_coverage": [
+            "ACCENT",
+            "PARTIAL",
+            "MAJOR",
+            "FULL"
+          ]
+        },
+        "winter_rule": "fur_trim=true만으로 WINTER ITEM 판정 금지. fur_coverage가 MAJOR 또는 FULL이거나 보온 기능이 확인되어야 winter_dominance=true"
+      },
+      "charm": {
+        "field": "charm",
+        "type": "boolean",
+        "required": true,
+        "child_fields": {
+          "charm_type": [
+            "METAL",
+            "ENAMEL",
+            "PLUSH",
+            "BEAD",
+            "LETTER",
+            "LOGO",
+            "TEAM",
+            "CHARACTER",
+            "MIXED"
+          ],
+          "charm_placement": [
+            "LACE",
+            "EYELET",
+            "ZIPPER",
+            "STRAP",
+            "HEEL",
+            "VAMP"
+          ],
+          "charm_count": "integer",
+          "charm_detachable": "boolean"
+        }
+      },
+      "decorative_detail_types": {
+        "type": "enum[]",
+        "max_items": 5,
+        "values": [
+          "BOW",
+          "RIBBON",
+          "RUFFLE",
+          "FRILL",
+          "EMBROIDERY",
+          "APPLIQUE",
+          "PATCH",
+          "CRYSTAL",
+          "RHINESTONE",
+          "STUD",
+          "SPIKE",
+          "FRINGE",
+          "TASSEL",
+          "QUILTING",
+          "PADDING",
+          "CONTRAST_STITCH",
+          "PIPING",
+          "PERFORATION",
+          "CUT_OUT",
+          "REFLECTIVE_DETAIL",
+          "METAL_HARDWARE",
+          "OVERSIZED_LACE",
+          "DOUBLE_LACE",
+          "SCALLOP",
+          "GATHERING"
+        ]
+      },
+      "functional_detail_types": {
+        "type": "enum[]",
+        "max_items": 5,
+        "values": [
+          "HEEL_PULL_TAB",
+          "WEBBING",
+          "PROTECTIVE_TOE",
+          "HEEL_COUNTER",
+          "ANKLE_SUPPORT",
+          "QUICK_LACE",
+          "TOGGLE",
+          "GAITER",
+          "DRAINAGE",
+          "VENTILATION_ZONE",
+          "REFLECTIVE_SAFETY",
+          "REMOVABLE_INSOLE"
+        ]
+      }
+    },
+    "print_pattern": [
+      {
+        "field": "has_pattern",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "field": "pattern_motif",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "SOLID",
+          "MONOGRAM",
+          "REPEAT_LOGO",
+          "TEAM_GRAPHIC",
+          "LETTERING",
+          "CHECK",
+          "STRIPE",
+          "DOT",
+          "FLORAL",
+          "ANIMAL",
+          "CAMOUFLAGE",
+          "GEOMETRIC",
+          "ABSTRACT",
+          "GRADIENT",
+          "TIE_DYE",
+          "PHOTO_GRAPHIC",
+          "MIXED"
+        ]
+      },
+      {
+        "field": "monogram",
+        "type": "boolean",
+        "required": true,
+        "derived_from": "pattern_motif=MONOGRAM"
+      },
+      {
+        "field": "pattern_technique",
+        "type": "enum",
+        "required": false,
+        "values": [
+          "SCREEN_PRINT",
+          "DIGITAL_PRINT",
+          "HEAT_TRANSFER",
+          "SUBLIMATION",
+          "JACQUARD",
+          "EMBROIDERY",
+          "EMBOSSED",
+          "DEBOSSED",
+          "LASER_CUT",
+          "APPLIQUE",
+          "FLOCKING",
+          "WOVEN",
+          "UNKNOWN"
+        ]
+      },
+      {
+        "field": "pattern_layout",
+        "type": "enum",
+        "required": false,
+        "values": [
+          "ALL_OVER",
+          "REPEAT",
+          "PLACEMENT",
+          "PANEL",
+          "BORDER",
+          "HEEL_ONLY",
+          "TONGUE_ONLY",
+          "SOLE_ONLY",
+          "MIXED"
+        ]
+      },
+      {
+        "field": "pattern_scale",
+        "type": "enum",
+        "required": false,
+        "values": [
+          "MICRO",
+          "SMALL",
+          "MEDIUM",
+          "LARGE"
+        ]
+      },
+      {
+        "field": "pattern_contrast",
+        "type": "enum",
+        "required": false,
+        "values": [
+          "TONAL",
+          "LOW",
+          "MEDIUM",
+          "HIGH"
+        ]
+      }
+    ],
+    "branding": [
+      {
+        "field": "logo_presence",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "field": "logo_type",
+        "type": "enum",
+        "required": false,
+        "values": [
+          "WORDMARK",
+          "INITIAL",
+          "SYMBOL",
+          "TEAM_LOGO",
+          "MONOGRAM",
+          "STRUCTURAL_LOGO",
+          "MIXED"
+        ]
+      },
+      {
+        "field": "logo_application",
+        "type": "enum[]",
+        "max_items": 3,
+        "required": false,
+        "values": [
+          "PRINT",
+          "EMBROIDERY",
+          "PATCH",
+          "METAL",
+          "EMBOSSED",
+          "DEBOSSED",
+          "MOLDED",
+          "WOVEN",
+          "PERFORATED"
+        ]
+      },
+      {
+        "field": "logo_placements",
+        "type": "enum[]",
+        "max_items": 4,
+        "required": false,
+        "values": [
+          "TONGUE",
+          "SIDE",
+          "HEEL",
+          "TOE",
+          "INSOLE",
+          "MIDSOLE",
+          "OUTSOLE",
+          "LACE",
+          "CHARM"
+        ]
+      },
+      {
+        "field": "logo_scale",
+        "type": "enum",
+        "required": false,
+        "values": [
+          "MICRO",
+          "SMALL",
+          "MEDIUM",
+          "LARGE",
+          "MEGA"
+        ]
+      }
+    ],
+    "color": {
+      "colors": {
+        "type": "object[]",
+        "max_items": 3,
+        "required": true,
+        "item_fields": [
+          {
+            "field": "rank",
+            "type": "integer",
+            "range": "1-3"
+          },
+          {
+            "field": "standard_color",
+            "type": "enum",
+            "values_source": "controlled_vocabularies.standard_colors"
+          },
+          {
+            "field": "brand_color_name",
+            "type": "text/null",
+            "description": "브랜드가 제공한 원문 컬러명"
+          },
+          {
+            "field": "hex_estimate",
+            "type": "text/null",
+            "description": "이미지 기반 참고값이며 공식 컬러명보다 우선하지 않음"
+          },
+          {
+            "field": "role",
+            "type": "enum",
+            "values": [
+              "PRIMARY",
+              "SECONDARY",
+              "ACCENT"
+            ]
+          },
+          {
+            "field": "placements",
+            "type": "text[]",
+            "max_items": 4
+          }
+        ]
+      },
+      "summary_fields": [
+        {
+          "field": "color_count",
+          "type": "integer",
+          "range": "1-3+"
+        },
+        {
+          "field": "color_scheme",
+          "type": "enum",
+          "values": [
+            "MONOCHROME",
+            "TONAL",
+            "BICOLOR",
+            "COLOR_BLOCK",
+            "MULTICOLOR"
+          ]
+        },
+        {
+          "field": "color_tone",
+          "type": "enum",
+          "values": [
+            "PASTEL",
+            "MUTED",
+            "NATURAL",
+            "BRIGHT",
+            "DEEP",
+            "DARK",
+            "NEON",
+            "MIXED"
+          ]
+        },
+        {
+          "field": "surface_finish",
+          "type": "enum[]",
+          "max_items": 3,
+          "values": [
+            "MATTE",
+            "SEMI_MATTE",
+            "GLOSSY",
+            "SATIN",
+            "METALLIC",
+            "IRIDESCENT",
+            "GLITTER",
+            "TRANSLUCENT",
+            "PATENT"
+          ]
+        }
+      ]
+    },
+    "function": {
+      "type": "object[]",
+      "max_items": 7,
+      "required": false,
+      "item_fields": [
+        {
+          "field": "function_type",
+          "type": "enum",
+          "values": [
+            "CUSHIONING",
+            "LIGHTWEIGHT",
+            "FLEXIBILITY",
+            "BREATHABILITY",
+            "GRIP",
+            "STABILITY",
+            "WATER_REPELLENT",
+            "WATERPROOF",
+            "INSULATION",
+            "DURABILITY",
+            "QUICK_DRY",
+            "SHOCK_ABSORPTION",
+            "ABRASION_RESISTANCE",
+            "ANKLE_SUPPORT"
+          ]
+        },
+        {
+          "field": "evidence_source",
+          "type": "enum",
+          "values": [
+            "OFFICIAL_DESCRIPTION",
+            "OFFICIAL_SPECIFICATION",
+            "IMAGE_INFERRED"
+          ]
+        },
+        {
+          "field": "evidence_text",
+          "type": "text"
+        },
+        {
+          "field": "confidence",
+          "type": "numeric",
+          "range": "0-1"
+        }
+      ],
+      "wellness_gate": "공식 설명 또는 실제 구조로 확인되는 기능 신호가 2개 이상이어야 WELLNESS 자동 확정 가능"
+    },
+    "ai_learning_and_review": [
+      {
+        "field": "classification_confidence",
+        "type": "numeric",
+        "range": "0-1",
+        "required": true
+      },
+      {
+        "field": "attribute_confidence",
+        "type": "jsonb",
+        "required": true,
+        "description": "주요 속성별 0~1 신뢰도"
+      },
+      {
+        "field": "evidence_json",
+        "type": "jsonb",
+        "required": true
+      },
+      {
+        "field": "reference_case_id",
+        "type": "text/null",
+        "required": false
+      },
+      {
+        "field": "review_status",
+        "type": "enum",
+        "required": true,
+        "values": [
+          "AI_CONFIRMED",
+          "REVIEW_REQUIRED",
+          "USER_CONFIRMED",
+          "OUT_OF_SCOPE"
+        ]
+      },
+      {
+        "field": "user_confirmed_line",
+        "type": "text/null",
+        "required": false
+      },
+      {
+        "field": "user_confirmed_subcategory",
+        "type": "text/null",
+        "required": false
+      },
+      {
+        "field": "user_confirmed_lifestyle",
+        "type": "text/null",
+        "required": false
+      },
+      {
+        "field": "user_corrections",
+        "type": "jsonb",
+        "required": false
+      },
+      {
+        "field": "definition_version",
+        "type": "text",
+        "required": true,
+        "value": "attribute_v1.0|category_v2.2|dna_v1.1"
+      }
+    ]
+  },
+  "controlled_vocabularies": {
+    "base_archetype": [
+      "BASIC",
+      "COURT",
+      "TENNIS",
+      "DUNK",
+      "BASKET_HERITAGE",
+      "SKATE",
+      "CANVAS",
+      "VULCANIZED",
+      "CLASSIC_SLIP_ON",
+      "RETRO_RUNNER",
+      "TECH_RUNNER",
+      "PERFORMANCE_RUNNER",
+      "SLIM_RETRO_TRAINER",
+      "TERRACE",
+      "RACING",
+      "DRIVING",
+      "MARTIAL_ARTS",
+      "BALLET",
+      "MARY_JANE_SNEAKER",
+      "MARY_JANE_DRESS",
+      "LOAFER",
+      "DERBY",
+      "MONK_STRAP",
+      "SANDAL",
+      "SLIDE",
+      "MULE",
+      "CLOG",
+      "FLIP_FLOP",
+      "HIKING",
+      "TRAIL",
+      "TACTICAL",
+      "RAIN_BOOT",
+      "WINTER_BOOT",
+      "HYBRID",
+      "EMERGING"
+    ],
+    "material_families": [
+      "LEATHER",
+      "TEXTILE",
+      "TECHNICAL",
+      "FUR_AND_INSULATION",
+      "SYNTHETIC",
+      "OTHER"
+    ],
+    "material_types": {
+      "LEATHER": [
+        "SMOOTH_CALF",
+        "GRAINED_LEATHER",
+        "NAPPA",
+        "SUEDE",
+        "NUBUCK",
+        "PATENT_LEATHER",
+        "COATED_LEATHER",
+        "SHEARLING",
+        "PONY_HAIR",
+        "EXOTIC_LEATHER"
+      ],
+      "TEXTILE": [
+        "CANVAS",
+        "DENIM",
+        "SATIN",
+        "VELVET",
+        "TWEED",
+        "JACQUARD",
+        "COTTON",
+        "WOOL",
+        "FLEECE",
+        "RAFFIA",
+        "SILK",
+        "SYNTHETIC_YARN"
+      ],
+      "TECHNICAL": [
+        "ENGINEERED_MESH",
+        "OPEN_MESH",
+        "NYLON",
+        "RIPSTOP",
+        "TECH_KNIT",
+        "NEOPRENE",
+        "TPU",
+        "PU",
+        "RUBBERIZED_FABRIC",
+        "REFLECTIVE",
+        "TRANSLUCENT",
+        "MEMBRANE"
+      ],
+      "FUR_AND_INSULATION": [
+        "REAL_FUR",
+        "FAUX_FUR",
+        "SHEARLING_FUR",
+        "FLEECE_LINING",
+        "SYNTHETIC_INSULATION",
+        "DOWN_FILL"
+      ],
+      "SYNTHETIC": [
+        "SYNTHETIC_LEATHER",
+        "PVC",
+        "EVA_SHEET",
+        "RUBBER_SHEET"
+      ],
+      "OTHER": [
+        "CORK",
+        "WOOD",
+        "UNKNOWN"
+      ]
+    },
+    "surface_constructions": [
+      "CROCHET",
+      "KNIT",
+      "WOVEN",
+      "BRAIDED",
+      "QUILTED",
+      "PUFFED",
+      "PLEATED",
+      "GATHERED",
+      "PERFORATED",
+      "EMBOSSED",
+      "DEBOSSED",
+      "COATED",
+      "BRUSHED",
+      "WASHED",
+      "DISTRESSED",
+      "LAMINATED",
+      "PRINTED",
+      "JACQUARD_WOVEN"
+    ],
+    "upper_placements": [
+      "VAMP",
+      "TOE",
+      "TOE_OVERLAY",
+      "QUARTER",
+      "SIDE_PANEL",
+      "EYESTAY",
+      "TONGUE",
+      "COLLAR",
+      "HEEL",
+      "HEEL_COUNTER",
+      "STRAP",
+      "MUDGUARD",
+      "FULL_UPPER"
+    ],
+    "standard_colors": [
+      "BLACK",
+      "WHITE",
+      "OFF_WHITE",
+      "GREY",
+      "SILVER",
+      "GOLD",
+      "BEIGE",
+      "TAN",
+      "BROWN",
+      "BURGUNDY",
+      "RED",
+      "ORANGE",
+      "YELLOW",
+      "GREEN",
+      "KHAKI",
+      "BLUE",
+      "NAVY",
+      "PURPLE",
+      "PINK",
+      "MULTI",
+      "TRANSPARENT"
+    ]
+  },
+  "category_attribute_usage": {
+    "SOLE": "LINER, RUNNER, SNEAKERS, CHUNKY 판정의 핵심",
+    "FORM_AND_STRUCTURE": "모든 대분류와 서브카테고리 판정의 핵심",
+    "UPPER_MATERIAL": "RUNNER, OUTDOOR, WINTER ITEM 판정의 구조 증거",
+    "MATERIAL_MIX": "카테고리 보조 증거이자 라이프스타일·추천 점수 핵심",
+    "FUR_TRIM": "DETAIL 기본값. MAJOR/FULL 보온 구조일 때만 WINTER 판정",
+    "CHARM": "대분류보다 STREET/FEMININE 라이프스타일 판정에 사용",
+    "PRINT_PATTERN": "대분류보다 라이프스타일·추천·프롬프트에 사용",
+    "COLOR": "대분류를 변경하지 않으며 라이프스타일·추천·프롬프트에 사용",
+    "FUNCTION": "RUNNER, OUTDOOR, WELLNESS 판정과 추천 근거"
+  },
+  "supabase_storage": {
+    "fixed_columns": [
+      {
+        "field": "id",
+        "sql_type": "uuid",
+        "primary_key": true
+      },
+      {
+        "field": "brand",
+        "sql_type": "text"
+      },
+      {
+        "field": "product_name",
+        "sql_type": "text"
+      },
+      {
+        "field": "product_code",
+        "sql_type": "text"
+      },
+      {
+        "field": "source_url",
+        "sql_type": "text"
+      },
+      {
+        "field": "mlb_line",
+        "sql_type": "text"
+      },
+      {
+        "field": "mlb_subcategory",
+        "sql_type": "text"
+      },
+      {
+        "field": "base_archetype",
+        "sql_type": "text"
+      },
+      {
+        "field": "primary_lifestyle",
+        "sql_type": "text"
+      },
+      {
+        "field": "secondary_lifestyle",
+        "sql_type": "text"
+      },
+      {
+        "field": "sole_height_level",
+        "sql_type": "smallint"
+      },
+      {
+        "field": "sole_sculpture_level",
+        "sql_type": "smallint"
+      },
+      {
+        "field": "sole_dominance",
+        "sql_type": "boolean"
+      },
+      {
+        "field": "upper_material_primary",
+        "sql_type": "text"
+      },
+      {
+        "field": "material_mix",
+        "sql_type": "boolean"
+      },
+      {
+        "field": "fur_trim",
+        "sql_type": "boolean"
+      },
+      {
+        "field": "charm",
+        "sql_type": "boolean"
+      },
+      {
+        "field": "pattern_motif",
+        "sql_type": "text"
+      },
+      {
+        "field": "monogram",
+        "sql_type": "boolean"
+      },
+      {
+        "field": "primary_color",
+        "sql_type": "text"
+      },
+      {
+        "field": "color_scheme",
+        "sql_type": "text"
+      },
+      {
+        "field": "classification_confidence",
+        "sql_type": "numeric(4,3)"
+      },
+      {
+        "field": "review_status",
+        "sql_type": "text"
+      },
+      {
+        "field": "reference_case_id",
+        "sql_type": "text"
+      },
+      {
+        "field": "definition_version",
+        "sql_type": "text"
+      },
+      {
+        "field": "created_at",
+        "sql_type": "timestamptz"
+      },
+      {
+        "field": "updated_at",
+        "sql_type": "timestamptz"
+      }
+    ],
+    "jsonb_columns": [
+      "source_metadata",
+      "form_structure",
+      "sole_attributes",
+      "upper_materials",
+      "detail_attributes",
+      "pattern_attributes",
+      "branding_attributes",
+      "color_attributes",
+      "function_attributes",
+      "attribute_confidence",
+      "evidence_json",
+      "user_corrections"
+    ],
+    "recommended_indexes": [
+      "mlb_line",
+      "mlb_subcategory",
+      "primary_lifestyle",
+      "sole_height_level",
+      "upper_material_primary",
+      "material_mix",
+      "fur_trim",
+      "charm",
+      "pattern_motif",
+      "primary_color",
+      "review_status"
+    ]
+  },
+  "output_record_template": {
+    "brand": "MIU MIU",
+    "product_name": "Tyre Technical Fabric and Suede Sneakers",
+    "product_code": "5E417E_LYW_F0R3K_F_005",
+    "mlb_line": "RUNNER",
+    "mlb_subcategory": "RUNNER_TECH_LIFESTYLE",
+    "base_archetype": "TECH_RUNNER",
+    "primary_lifestyle": "STREET",
+    "secondary_lifestyle": "PREMIUM SPORTIVE",
+    "form_structure": {
+      "toe_shape": "ROUND",
+      "toe_height": "STANDARD",
+      "upper_volume": "STANDARD",
+      "shoe_height": "LOW",
+      "closure_types": [
+        "LACE"
+      ],
+      "heel_structure": "CLOSED",
+      "foot_hugging": false,
+      "last_width": "STANDARD",
+      "panel_complexity": "MULTI_LAYER"
+    },
+    "sole_attributes": {
+      "sole_height_level": 3,
+      "sole_height_source": "IMAGE_ESTIMATED",
+      "sole_geometry": "LUGGED",
+      "sole_sculpture_level": 3,
+      "sole_continuity": true,
+      "sole_dominance": false,
+      "tread_type": "STAR"
+    },
+    "upper_materials": [
+      {
+        "rank": 1,
+        "material_family": "TECHNICAL",
+        "material_type": "NYLON",
+        "surface_construction": [
+          "WOVEN"
+        ],
+        "role": "MAIN",
+        "placement": [
+          "VAMP",
+          "QUARTER"
+        ],
+        "evidence_source": "OFFICIAL_DESCRIPTION",
+        "confidence": 0.95
+      },
+      {
+        "rank": 2,
+        "material_family": "LEATHER",
+        "material_type": "SUEDE",
+        "surface_construction": [
+          "BRUSHED"
+        ],
+        "role": "SECONDARY",
+        "placement": [
+          "TOE_OVERLAY",
+          "SIDE_PANEL",
+          "HEEL"
+        ],
+        "evidence_source": "OFFICIAL_DESCRIPTION",
+        "confidence": 0.98
+      }
+    ],
+    "material_mix": true,
+    "detail_attributes": {
+      "fur_trim": false,
+      "charm": false,
+      "decorative_detail_types": [
+        "OVERSIZED_LACE"
+      ],
+      "functional_detail_types": [
+        "HEEL_PULL_TAB",
+        "REMOVABLE_INSOLE"
+      ]
+    },
+    "pattern_attributes": {
+      "has_pattern": false,
+      "pattern_motif": "SOLID",
+      "monogram": false
+    },
+    "color_attributes": {
+      "colors": [
+        {
+          "rank": 1,
+          "standard_color": "WHITE",
+          "brand_color_name": "화이트",
+          "hex_estimate": null,
+          "role": "PRIMARY",
+          "placements": [
+            "FULL_UPPER"
+          ]
+        },
+        {
+          "rank": 2,
+          "standard_color": "GREY",
+          "brand_color_name": "그레닛 그레이",
+          "hex_estimate": null,
+          "role": "SECONDARY",
+          "placements": [
+            "OVERLAY"
+          ]
+        },
+        {
+          "rank": 3,
+          "standard_color": "TAN",
+          "brand_color_name": "검 러버",
+          "hex_estimate": null,
+          "role": "ACCENT",
+          "placements": [
+            "OUTSOLE"
+          ]
+        }
+      ],
+      "color_count": 3,
+      "color_scheme": "TONAL",
+      "color_tone": "NATURAL",
+      "surface_finish": [
+        "MATTE"
+      ]
+    },
+    "classification_confidence": 0.91,
+    "reference_case_id": "MIUMIU_TYRE_5E417E",
+    "review_status": "USER_CONFIRMED",
+    "definition_version": "attribute_v1.0|category_v2.2|dna_v1.1"
+  },
+  "reference_case_links": [
+    {
+      "case_id": "LV_OASIS_MULE_1ACRPV",
+      "expected_result": "SUMMER ITEM|SUMMER_MULE_BLOAFER|WELLNESS"
+    },
+    {
+      "case_id": "LV_TILTED_SNEAKER_1AKN68",
+      "expected_result": "LINER|LINER_SKATE|STREET"
+    },
+    {
+      "case_id": "LV_DROP_300_1AKOYF",
+      "expected_result": "RUNNER|RUNNER_RETRO|PREMIUM SPORTIVE"
+    },
+    {
+      "case_id": "LV_TATIC_RUNNER_1AKC33",
+      "expected_result": "CHUNKY|CHUNKY_SCULPTURAL_RUNNER|STREET"
+    },
+    {
+      "case_id": "MIUMIU_PLUME_SATIN_5E570E",
+      "expected_result": "SNEAKERS|SNEAKERS_BALLET|FEMININE"
+    },
+    {
+      "case_id": "MIUMIU_TYRE_5E417E",
+      "expected_result": "RUNNER|RUNNER_TECH_LIFESTYLE|STREET"
+    },
+    {
+      "case_id": "PRADA_SPEEDROCK_LOAFER_2DE161",
+      "expected_result": "NEW LINE|NEW_SNOAFER|PREMIUM SPORTIVE"
+    }
+  ]
+}

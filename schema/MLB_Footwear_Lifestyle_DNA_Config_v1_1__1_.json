@@ -1,0 +1,339 @@
+{
+  "brand": "MLB",
+  "product_domain": "FOOTWEAR",
+  "taxonomy_version": "1.1",
+  "updated_at": "2026-07-24",
+  "active": true,
+  "overall_style_guide": "MLB 신발 DNA는 글로벌 스포츠 헤리티지를 TRENDY한 감도로 재해석한 기능성 프리미엄 라이프스타일 풋웨어이다. 도시 일상, 문화, 여행, 웰니스 등 다양한 라이프스타일에 자연스럽게 녹아들되 어떤 유형에서도 소재·구조·디테일 중 최소 하나는 한 단계 높은 프리미엄 포인트를 가져야 한다. 실루엣은 착화 시 발과 다리선을 정돈하고 비율을 길고 안정적으로 보이게 하며, 볼륨은 목적 없이 커지지 않고 발 형태와 착장을 보완하도록 설계한다. 럭셔리한 표현은 천연 질감의 고급 소재와 경량·쿠셔닝·통기·접지·내구·방수 등 검증 가능한 기능을 함께 구성한다. MLB 헤리티지와 로고는 제품 구조에 조화되는 정제된 포인트로 사용하며, 저가감·무근거 기능 표현·경쟁 브랜드 모방·과도한 장식은 배제한다.",
+  "classification_policy": {
+    "primary_label_count": 1,
+    "secondary_label_enabled": true,
+    "axes_independent": true,
+    "category_axis": "LINER | RUNNER | SNEAKERS | CHUNKY | OUTDOOR | SUMMER ITEM | WINTER ITEM | NEW LINE",
+    "lifestyle_axis": "PREMIUM SPORTIVE | STREET | FEMININE | WELLNESS",
+    "axis_rule": "상품 형태 카테고리를 먼저 확정한 뒤 동일 이미지에서 라이프스타일 표현을 별도로 판정한다. 같은 STREET라도 LINER·RUNNER·CHUNKY가 모두 가능하다.",
+    "user_confirmed_reference_priority": true,
+    "reference_similarity_fields": [
+      "base_archetype",
+      "sole_height_level",
+      "sole_sculpture_level",
+      "sole_dominance",
+      "upper_construction",
+      "materials",
+      "detail_expression",
+      "official_product_description"
+    ],
+    "auto_confirm_threshold": 75,
+    "review_threshold": 55,
+    "minimum_top_score_gap": 10,
+    "evidence_scale": "0-5",
+    "scoring_formula": "SUM(evidence_score × dna_weight) / 5"
+  },
+  "lifestyle_boundary_rules": {
+    "STREET_vs_PREMIUM_SPORTIVE": "스케이트 문화, 과장된 비례, 다이내믹 그래픽, 플레이풀 레이어, 조형 솔처럼 표현성이 우세하면 STREET. 고급 소재와 기능이 절제된 도시형 구조로 정돈되면 PREMIUM SPORTIVE",
+    "FEMININE_color_guard": "핑크색만으로 FEMININE 판정 금지. 발레·메리제인·저상 비례, 새틴·소프트 촉감, 섬세한 곡선·셔링·리본 중 구조 신호가 함께 있어야 함",
+    "WELLNESS_function_gate": "편안해 보인다는 인상만으로 WELLNESS 판정 금지. 경량·유연성·쿠셔닝·안정성·접지·통기 중 공식 설명 또는 구조로 확인되는 신호가 2개 이상 필요",
+    "category_independence": "LINER·RUNNER·SNEAKERS·CHUNKY·NEW LINE은 형태값이고 라이프스타일이 아니다. 형태가 달라도 표현 목적이 같으면 동일 DNA를 부여한다."
+  },
+  "recommendation": {
+    "component_weights": {
+      "dna_match": 55,
+      "mlb_core_fit": 30,
+      "image_quality": 15
+    },
+    "mlb_core_fit_weights": {
+      "premium_execution": 25,
+      "functional_credibility": 25,
+      "lifestyle_integration": 20,
+      "silhouette_proportion": 15,
+      "heritage_identity": 15
+    },
+    "tiers": [
+      {
+        "min": 80,
+        "label": "A_우선추천",
+        "action": "MLB 제안 결과 상단 노출"
+      },
+      {
+        "min": 70,
+        "label": "B_추천",
+        "action": "일반 추천 결과 포함"
+      },
+      {
+        "min": 60,
+        "label": "C_검수",
+        "action": "사용자 검수 후 포함"
+      },
+      {
+        "min": 0,
+        "label": "D_비추천",
+        "action": "기본 추천에서 제외"
+      }
+    ],
+    "hard_gates": [
+      "경쟁 브랜드 디자인·로고의 직접 모방 위험이 없어야 함",
+      "저가감·프로모션·가격인하 중심 이미지가 아니어야 함",
+      "이미지 출처와 사용 가능 범위를 별도 필드로 보존해야 함",
+      "WELLNESS는 검증 가능한 기능 신호가 최소 2개 있어야 함",
+      "이미지에 왜곡된 MLB·팀 로고가 있으면 자동 추천에서 제외"
+    ]
+  },
+  "prompt": {
+    "common_positive": "premium Korean fashion editorial product photography for MLB Korea footwear, globally relevant sports heritage, trend-led functional luxury, refined materials, purposeful construction, polished craftsmanship, realistic wearable proportions, silhouette that visually refines the foot and leg line, premium commercial lighting, authentic product texture, sophisticated lifestyle integration",
+    "common_negative": "cheap plastic look, discount retail mood, distorted proportions, random oversized logos, copied competitor design, fake technical parts, excessive decorations, low-resolution materials, warped text, invented or distorted team logos, unwearable heel geometry, cluttered background, generic stock-photo styling",
+    "template": "{{common_positive_prompt}}, {{lifestyle_prompt_positive}}, {{mlb_style_family_prompt}}, {{style_subtype_prompt}}, {{product_material_color}}, {{scene_context}}, {{camera_lighting}}, authentic approved MLB brand assets only when supplied. Negative prompt: {{common_negative_prompt}}, {{lifestyle_prompt_negative}}"
+  },
+  "lifestyle_dna": [
+    {
+      "code": "PREMIUM_SPORTIVE",
+      "name": "PREMIUM SPORTIVE",
+      "active": true,
+      "settings_description": "글로벌 스포츠 헤리티지를 정제된 도시형 프리미엄 감도로 풀어낸 데일리 풋웨어. 구조적인 슬림~미드 볼륨과 고급 소재, 절제된 MLB 아이덴티티가 핵심이며 출퇴근·여행·문화생활 등 수준 높은 일상에 자연스럽게 녹아들어야 한다. 기능은 과시하지 않되 착화감·경량·통기·내구 중 최소 1개가 실제 구조에 반영되어야 한다.",
+      "core_concept": "글로벌 스포츠 헤리티지 × 정제된 도시형 프리미엄 데일리",
+      "target_customer": "25~40세 도시 생활자. 브랜드 헤리티지와 소재의 완성도를 중시하며 출퇴근·여행·문화생활·프리미엄 캐주얼을 연결하는 고객",
+      "lifestyle_scenes": "도심 출퇴근, 프리미엄 캠퍼스, 갤러리·카페, 비즈니스 캐주얼, 공항·여행, 클럽하우스형 데일리",
+      "silhouette": "착화 시 발과 다리선을 길고 정돈되게 보이는 구조적 슬림~미드 볼륨. 과도하게 날카롭거나 무겁지 않은 균형형 실루엣",
+      "volume_sole": "LV2~LV3. 낮거나 중간 높이의 컵솔·검솔·정제된 폼솔. 앞뒤 비례가 안정적이며 볼륨은 발 형태와 착장을 보완",
+      "upper_construction": "2~3개 중심 패널, 명확한 토·사이드 구조, 헤리티지 트레이너·코트·테라스·정제된 러너 어퍼",
+      "materials": "프리미엄 스웨이드·누벅·나파 레더·고밀도 나일론·정제된 메시·고무를 혼합. 천연 질감과 기능 소재가 충돌하지 않아야 함",
+      "color_finish": "오프화이트·그레이·네이비·브라운·블랙 중심. 팀 헤리티지 컬러는 절제된 포인트. 세미매트·톤온톤·부분 광택",
+      "details_branding": "톤온톤 자수, 직조 패치, 디보스, 소형 메탈 포인트, 야구 헤리티지 스티치. 로고는 제품 구조와 조화",
+      "required_function": "착화감·경량·통기·내구·접지 중 최소 1개를 실제 구조로 구현",
+      "classification_signals": "구조적 슬림~미드 볼륨, 프리미엄 소재, 2~3 패널, 절제된 로고, 세미매트, 도시형 데일리, 스포츠 헤리티지, 포멀 어퍼+경량 스포츠 솔의 정제된 하이브리드",
+      "recommendation_signals": "프리미엄 소재 신호 1개 이상 + 스포츠 헤리티지 + 데일리 활용성 + 실루엣 균형 + 기능 신호 1개 이상",
+      "exclusion_signals": "저가 합성소재 느낌, 무근거 럭셔리, 과도한 메가 로고, 목적 없는 청키 볼륨, 순수 포멀 구두, 경쟁 브랜드 실루엣 모방",
+      "prompt_positive": "refined urban premium sports sneaker, structured slim-to-moderate silhouette that elongates the leg line, clean two-to-three panel construction, premium suede and nappa leather mixed with technical nylon, tonal MLB heritage details, semi-matte finish, understated gum or sculpted outsole, sophisticated city gallery and premium commute mood",
+      "prompt_negative": "overly bulky dad-shoe proportions, loud random neon, cheap synthetic leather, excessive tech decoration, purely formal dress shoe, oversized uncontrolled branding",
+      "classification_weights": {
+        "SPORT_HERITAGE": 20,
+        "TREND_STATEMENT": 5,
+        "SILHOUETTE_LINE": 15,
+        "FUNCTION_TECH": 10,
+        "PREMIUM_MATERIAL": 15,
+        "VOLUME_SCULPTURE": 5,
+        "DETAIL_EXPRESSION": 5,
+        "URBAN_DAILY": 10,
+        "WELLNESS_CONTEXT": 5,
+        "MLB_IDENTITY": 10
+      },
+      "style_affinity": {
+        "LINER": 95,
+        "RUNNER": 75,
+        "SNEAKERS": 90,
+        "CHUNKY": 65,
+        "OUTDOOR": 70,
+        "SUMMER ITEM": 75,
+        "WINTER ITEM": 70,
+        "NEW LINE": 90
+      }
+    },
+    {
+      "code": "STREET",
+      "name": "STREET",
+      "active": true,
+      "settings_description": "성수동과 글로벌 크리에이티브 스트리트 문화를 즐기는 고객을 위한 TRENDY한 프리미엄 풋웨어. 볼드한 볼륨·레이어·컬러·참·그래픽을 사용하되 실루엣이 발과 다리 비율을 살려야 하며, 귀엽고 여성적인 곡선이나 디테일은 성별과 관계없이 세련되게 적용한다. 기능성과 소재 완성도를 확보해 단순 유행품이나 저가 노벨티로 보이지 않아야 한다.",
+      "core_concept": "성수동 크리에이티브 스트리트 × 프리미엄 기능성 × 플레이풀 디테일",
+      "target_customer": "18~32세 트렌드 민감 고객. 팝업·패션·음악·SNS·크리에이티브 문화를 즐기며 새로운 실루엣과 자기표현을 중시",
+      "lifestyle_scenes": "성수동·한남동, 팝업스토어, 야간 도심, 공연·페스티벌, 스케이트·댄스, 트렌드 카페, 여행 스트리트",
+      "silhouette": "LV3~LV5의 볼드한 존재감이 있으나 발과 다리 비율을 무너뜨리지 않는 균형형. 곡선·폭·레이어로 실루엣을 강조",
+      "volume_sole": "청키·플랫폼·조형 솔 또는 볼드 러너. 부피는 디자인 의도와 착화 안정성을 가져야 하며 무의미하게 무겁지 않아야 함",
+      "upper_construction": "복합 패널, 비대칭 레이어, 메시·PU·TPU 혼합, 과장된 레이스 구조, 시각적 깊이가 있는 어퍼",
+      "materials": "고밀도 메시·코팅 레더·스웨이드·테크 나일론·TPU·러버·리플렉티브·메탈릭을 프리미엄 품질로 MIX",
+      "color_finish": "블랙·실버·그레이 기반에 팀 컬러·네온·핑크·블루 등 포인트. 매트·글로시·메탈릭의 통제된 믹스",
+      "details_branding": "메가 로고 또는 구조형 로고, 참·그래픽·자수·레이스 장식·비대칭 포인트. 귀여운 요소도 유아적이지 않게 정제",
+      "required_function": "쿠셔닝·경량·접지·내구·발목 지지 중 최소 1개. 장식 때문에 착화성이 저하되지 않아야 함",
+      "classification_signals": "스케이트 원형, 넓고 패딩감 있는 어퍼, 굵은 레이스, 볼드 볼륨, 복합 레이어, 믹스 소재, 컬러 대비, 다이내믹 그래픽, 플레이풀 디테일, 높고 조형적인 솔",
+      "recommendation_signals": "트렌드 신호 + 볼륨/레이어 + 플레이풀 디테일 + 프리미엄 마감 + 착화 기능 1개 이상",
+      "exclusion_signals": "무작위 장식, 저가 노벨티, 경쟁 브랜드 그래픽 모방, 비례를 무너뜨리는 과대 볼륨, 기능 없는 가짜 테크 파츠",
+      "prompt_positive": "Seongsu Seoul creative street sneaker, bold yet balanced volume, layered mesh leather and TPU, premium mixed finishes, playful charm and lace details, refined feminine curve accents wearable across genders, statement color accents, functional grip and cushioning, trend-forward but polished editorial mood",
+      "prompt_negative": "cheap novelty toy look, random cluttered graphics, copied streetwear logos, shapeless oversized sole, childish decoration, purposeless hardware, low-quality plastic shine",
+      "classification_weights": {
+        "SPORT_HERITAGE": 5,
+        "TREND_STATEMENT": 20,
+        "SILHOUETTE_LINE": 10,
+        "FUNCTION_TECH": 10,
+        "PREMIUM_MATERIAL": 10,
+        "VOLUME_SCULPTURE": 20,
+        "DETAIL_EXPRESSION": 15,
+        "URBAN_DAILY": 5,
+        "WELLNESS_CONTEXT": 0,
+        "MLB_IDENTITY": 5
+      },
+      "style_affinity": {
+        "LINER": 85,
+        "RUNNER": 85,
+        "SNEAKERS": 80,
+        "CHUNKY": 95,
+        "OUTDOOR": 80,
+        "SUMMER ITEM": 85,
+        "WINTER ITEM": 90,
+        "NEW LINE": 90
+      }
+    },
+    {
+      "code": "FEMININE",
+      "name": "FEMININE",
+      "active": true,
+      "settings_description": "섬세한 비례·촉감·디테일로 현대적인 여성성을 표현하는 프리미엄 풋웨어. 핑크색만으로 분류하지 않고 낮고 길어진 발선, 메리제인·발레·슬림 러너 등의 실루엣과 스웨이드·나파·새틴·소프트 메시의 텍스처, 리본·참·자수·메탈 포인트가 함께 작동해야 한다. 편안함·유연성·미끄럼 방지 등 실제 착화 기능을 유지하며 로맨틱함이 코스튬처럼 과장되지 않아야 한다.",
+      "core_concept": "현대적 여성성 × 섬세한 비례 × 프리미엄 텍스처 × 실제 착화 기능",
+      "target_customer": "20~35세 감도 높은 고객. 소재 촉감과 섬세한 디테일, 스타일링 확장성, 편안함을 함께 중시",
+      "lifestyle_scenes": "갤러리·브런치, 도심 데이트, 여행, 프리미엄 캐주얼, 드레스 믹스, 소프트 스포츠, 호텔 라운지",
+      "silhouette": "LV1~LV3. 발과 다리선을 길고 정돈되게 하는 낮은 토·슬림 비례 또는 여성적 곡선을 살린 통제된 볼륨",
+      "volume_sole": "얇은 플랫 솔·저상 컵솔·슬림 러너·낮은 플랫폼. 불안정한 힐보다 유연성과 착화 안정성을 우선",
+      "upper_construction": "메리제인 스트랩, 발레형 곡선, 슬림 레이스업, 리본 레이싱, 섬세한 패널과 부드러운 칼라",
+      "materials": "프리미엄 스웨이드·나파·새틴·소프트 메시·니트·벨루어 터치와 고급 라이닝. 소재 대비는 섬세하게",
+      "color_finish": "크림·블러시·모카·버건디·소프트 그레이·파우더 블루·실버. 소프트 매트·새틴 광택·펄 포인트",
+      "details_branding": "리본·참·자수·스캘럽·소형 메탈·톤온톤 모노그램. MLB 로고는 섬세하지만 식별 가능하게",
+      "required_function": "쿠셔닝·유연성·미끄럼 방지·통기·가벼움 중 최소 1개. 발등 스트랩과 토 공간의 실제 착화성 확보",
+      "classification_signals": "슬림 비례, 낮은 토, 메리제인/발레 구조, 새틴·소프트 어퍼, 셔링·주름, 섬세한 레이스업, 고급 촉감, 리본·참·자수·메탈. 색상만으로 판정하지 않음",
+      "recommendation_signals": "실루엣·텍스처·여성적 디테일 중 2개 이상 + 프리미엄 마감 + 착화 기능 1개 이상",
+      "exclusion_signals": "핑크색만으로 여성성 판정, 유아적 코스튬, 과도한 리본·장식, 불편한 극단적 협소 토, 기능 없는 장식용 솔",
+      "prompt_positive": "modern refined feminine sneaker, elegant low-profile or controlled-volume silhouette, elongated foot and leg line, premium suede satin nappa leather and soft mesh, ribbon or Mary Jane strap, subtle charm embroidery and metal details, romantic muted palette, flexible cushioned outsole, editorial softness without costume styling",
+      "prompt_negative": "pink-only stereotype, childish princess styling, excessive bows and charms, unstable high heel, costume footwear, overly narrow unwearable toe, cheap glitter, sugary over-decoration",
+      "classification_weights": {
+        "SPORT_HERITAGE": 5,
+        "TREND_STATEMENT": 5,
+        "SILHOUETTE_LINE": 25,
+        "FUNCTION_TECH": 5,
+        "PREMIUM_MATERIAL": 20,
+        "VOLUME_SCULPTURE": 5,
+        "DETAIL_EXPRESSION": 20,
+        "URBAN_DAILY": 5,
+        "WELLNESS_CONTEXT": 5,
+        "MLB_IDENTITY": 5
+      },
+      "style_affinity": {
+        "LINER": 65,
+        "RUNNER": 60,
+        "SNEAKERS": 95,
+        "CHUNKY": 70,
+        "OUTDOOR": 45,
+        "SUMMER ITEM": 85,
+        "WINTER ITEM": 75,
+        "NEW LINE": 90
+      }
+    },
+    {
+      "code": "WELLNESS",
+      "name": "WELLNESS",
+      "active": true,
+      "settings_description": "테니스·골프·호텔·피트니스·여행·워킹을 즐기는 고객을 위한 럭셔리 웰니스 풋웨어. 클래식 스포츠를 레벨업한 실루엣에 프리미엄 소재와 기능성 소재를 반드시 MIX하고, 쿠셔닝·안정성·접지·통기·경량·방수 중 최소 2개가 실제 구조로 확인되어야 한다. 볼륨은 몸과 다리 비율을 살리고 움직임을 보조하는 목적형이어야 하며, 모노그램과 로고는 조용한 럭셔리 포인트로 사용한다.",
+      "core_concept": "럭셔리 웰니스 × 클래식 스포츠 레벨업 × 검증 가능한 기능성",
+      "target_customer": "25~45세 프리미엄 액티브 고객. 테니스·골프·호텔·피트니스·여행·워킹을 일상 라이프스타일로 소비",
+      "lifestyle_scenes": "프리미엄 테니스 코트, 골프 클럽, 호텔·리조트, 웰니스 센터, 아침 워킹, 공항·여행, 액티브 출퇴근",
+      "silhouette": "LV3~LV5. 발의 움직임과 안정성을 보조하는 인체공학적 볼륨. 착화 시 다리 비율을 안정적으로 보이게 하는 목적형 구조",
+      "volume_sole": "쿠셔닝 폼·로커·안정 구조·접지 아웃솔. 높은 솔은 기능적 근거가 있어야 하며 평평한 패션 플랫폼과 구분",
+      "upper_construction": "기능별 패널 분리, 엔지니어드 메시, 힐 지지, 토 보호, 통기 존, 필요 시 방수·퀵레이스 구조",
+      "materials": "엔지니어드 메시·프리미엄 니트·고밀도 나일론·립스톱·스웨이드/나파 포인트·기능성 멤브레인·고반발 폼",
+      "color_finish": "아이보리·그레이·브라운·포레스트 그린·네이비·블랙 등 Quiet Tech 뉴트럴. 저광택·매트와 리플렉티브 포인트",
+      "details_branding": "톤온톤 MLB 로고, 제한적 모노그램, 리플렉티브·기능 라인·기술 라벨. 장식보다 구조와 조화",
+      "required_function": "쿠셔닝·안정성·접지·통기·경량·내구·발수/방수 중 최소 2개가 실제 제품 구조나 공식 설명으로 확인",
+      "classification_signals": "기능성 메시, 인체공학적 솔, 안정 구조, 리플렉티브, 프리미엄 소재 믹스, 경량·유연·쿠셔닝 등 2개 이상 기능 근거, 테니스·골프·호텔·리조트·여행·웰니스 장면",
+      "recommendation_signals": "검증 기능 2개 이상 + 프리미엄 소재 + 목적형 실루엣 + 럭셔리 웰니스 장면 + 절제된 MLB 아이덴티티",
+      "exclusion_signals": "프리미엄 라이프스타일성이 없는 순수 경기화, 정제되지 않은 아웃도어 장비, 가짜 테크 파츠, 기능 근거 없는 볼륨",
+      "prompt_positive": "luxury wellness performance sneaker for tennis golf hotel fitness travel and walking, ergonomic supportive silhouette, purposeful cushioning and rocker geometry, engineered mesh mixed with premium suede or nappa leather, technical nylon, refined monogram and reflective accents, quiet-luxury neutral palette, breathable stable lightweight grippy construction",
+      "prompt_negative": "raw utilitarian outdoor gear, generic gym shoe, fake performance parts, purposeless oversized foam, muddy expedition styling, low-grade mesh, overly aggressive technical graphics, no premium lifestyle context",
+      "classification_weights": {
+        "SPORT_HERITAGE": 5,
+        "TREND_STATEMENT": 0,
+        "SILHOUETTE_LINE": 10,
+        "FUNCTION_TECH": 30,
+        "PREMIUM_MATERIAL": 15,
+        "VOLUME_SCULPTURE": 10,
+        "DETAIL_EXPRESSION": 0,
+        "URBAN_DAILY": 5,
+        "WELLNESS_CONTEXT": 20,
+        "MLB_IDENTITY": 5
+      },
+      "style_affinity": {
+        "LINER": 55,
+        "RUNNER": 95,
+        "SNEAKERS": 60,
+        "CHUNKY": 65,
+        "OUTDOOR": 80,
+        "SUMMER ITEM": 85,
+        "WINTER ITEM": 80,
+        "NEW LINE": 75
+      }
+    }
+  ],
+  "reference_cases": [
+    {
+      "case_id": "LV_OASIS_MULE_1ACRPV",
+      "brand": "LOUIS VUITTON",
+      "product_name": "LV Oasis Mule",
+      "mlb_line": "SUMMER ITEM",
+      "primary_lifestyle": "WELLNESS",
+      "secondary_lifestyle": "PREMIUM SPORTIVE",
+      "evidence": "릴랙스드 뮬, 프리미엄 그레인 레더, 유연하고 가벼운 러버 솔, 편안함을 강조한 공식 설명",
+      "prompt_addition": "refined luxury hotel and resort mule, premium grained leather, supple lightweight rubber outsole, relaxed yet polished comfort",
+      "user_confirmed": true
+    },
+    {
+      "case_id": "LV_TILTED_SNEAKER_1AKN68",
+      "brand": "LOUIS VUITTON",
+      "product_name": "LV Tilted Sneaker",
+      "mlb_line": "LINER",
+      "primary_lifestyle": "STREET",
+      "secondary_lifestyle": null,
+      "evidence": "2000s 스케이트 원형, 넓고 패딩감 있는 어퍼, 굵은 레이스, 기울어진 로고와 스트리트 문화 표현",
+      "prompt_addition": "premium 2000s skate street sneaker, wide padded upper, thick laces, flat continuous cupsole, playful tilted graphic identity",
+      "user_confirmed": true
+    },
+    {
+      "case_id": "LV_DROP_300_1AKOYF",
+      "brand": "LOUIS VUITTON",
+      "product_name": "LV Drop 300 Sneaker",
+      "mlb_line": "RUNNER",
+      "primary_lifestyle": "PREMIUM SPORTIVE",
+      "secondary_lifestyle": "WELLNESS",
+      "evidence": "300g 경량, 슬림한 빈티지 러너 비례, 실크 테크와 스웨이드, 충격 흡수 아웃솔의 절제된 결합",
+      "prompt_addition": "streamlined premium retro runner, 300 gram lightweight construction, suede and luxury technical fabric, refined shock-absorbing outsole",
+      "user_confirmed": true
+    },
+    {
+      "case_id": "LV_TATIC_RUNNER_1AKC33",
+      "brand": "LOUIS VUITTON",
+      "product_name": "LV Tatic Runner Sneaker",
+      "mlb_line": "CHUNKY",
+      "primary_lifestyle": "STREET",
+      "secondary_lifestyle": null,
+      "evidence": "높고 강하게 울퉁불퉁한 조형 솔, 복합 테크 레이어, 컬러 포인트와 다이내믹 그래픽이 표현을 지배",
+      "prompt_addition": "bold sculptural street runner, high undulating segmented sole, layered technical upper, dynamic graphics and controlled color flashes",
+      "user_confirmed": true
+    },
+    {
+      "case_id": "MIUMIU_PLUME_SATIN_5E570E",
+      "brand": "MIU MIU",
+      "product_name": "Plume Satin Sneakers",
+      "mlb_line": "SNEAKERS",
+      "primary_lifestyle": "FEMININE",
+      "secondary_lifestyle": null,
+      "evidence": "저상 발레 비례, 초경량 구조, 새틴의 부드러운 광택, 셔링·주름과 섬세한 레이스업",
+      "prompt_addition": "ultralight satin ballet sneaker, delicate gathered upper, soft powder palette, slim foot-hugging low profile, refined flexible rubber sole",
+      "user_confirmed": true
+    },
+    {
+      "case_id": "MIUMIU_TYRE_5E417E",
+      "brand": "MIU MIU",
+      "product_name": "Tyre Technical Fabric and Suede Sneakers",
+      "mlb_line": "RUNNER",
+      "primary_lifestyle": "STREET",
+      "secondary_lifestyle": "PREMIUM SPORTIVE",
+      "evidence": "테크니컬 패브릭과 스웨이드 레이어, 타이어형 요철 솔, 대담한 아이덴티티와 플레이풀한 레이스 구조",
+      "prompt_addition": "trend-forward technical lifestyle runner, layered suede and technical fabric, playful lace construction, dynamic tyre-inspired tread, premium street finish",
+      "user_confirmed": true
+    },
+    {
+      "case_id": "PRADA_SPEEDROCK_LOAFER_2DE161",
+      "brand": "PRADA",
+      "product_name": "Speedrock Leather Loafers",
+      "mlb_line": "NEW LINE",
+      "primary_lifestyle": "PREMIUM SPORTIVE",
+      "secondary_lifestyle": null,
+      "evidence": "정제된 가죽 로퍼 어퍼, 경량 스포츠 솔, 유연한 착화 구조와 도시적 포멀·테크 하이브리드",
+      "prompt_addition": "refined urban snoafer, premium leather loafer upper fused with a lightweight sporty rubber sole, restrained technical luxury, polished daily versatility",
+      "user_confirmed": true
+    }
+  ]
+}
